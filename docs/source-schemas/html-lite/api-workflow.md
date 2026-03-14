@@ -13,7 +13,15 @@ Include:
 - schemaDefinition as JSON string
 - metadata (location, category, region, language, estimatedEventCount)
 
-Response includes:
+The endpoint behaviour depends on whether the `feedUrl` has been seen before:
+
+| Scenario | HTTP Status | Outcome |
+|---|---|---|
+| New feedUrl | 201 Created | Draft created, validation result returned |
+| Existing Draft (same feedUrl) | 200 OK | Draft overwritten with new values, validation result returned |
+| Existing Approved source | 400 Bad Request | Error — source cannot be edited via submit |
+
+Response (201 or 200) includes:
 - sourceSchema
 - validation.isSuccess
 - validation.totalEventsParsed
@@ -70,6 +78,14 @@ Failure example:
 }
 ```
 
+Approved source error (400):
+
+```json
+{
+  "error": "This source is already approved and cannot be edited via submit."
+}
+```
+
 ## Step 2: Review Validation Result
 
 Validation pass:
@@ -79,7 +95,7 @@ Validation pass:
 Validation failure:
 - validation.isSuccess = false
 - review validation.errorMessage
-- fix schema and submit a new Draft version
+- fix schema and re-submit the same feedUrl (returns 200 and overwrites the Draft)
 
 ## Step 3: Handoff To Admin Review
 
