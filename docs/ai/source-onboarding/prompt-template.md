@@ -42,26 +42,40 @@ Instructions:
    mappings, pagination (if needed), and validation.requiredFields.
 3. Serialize schemaDefinition as a compact JSON string (no line breaks).
 
+Schema contract (must follow exactly):
+- mappings values must be strings, not objects.
+- For text or datetime extraction: use "selector".
+- For attribute extraction: use "selector@attribute".
+- Do not output mapping objects like {"selector":"...","type":"...","attribute":"..."}.
+- If detail page extraction is used, use detailPage.linkSelector and detailPage.detailMappings with string selectors only.
+
 Output exactly two things and nothing else:
 
 ### 1. schemaDefinition JSON (pretty-printed for review)
 <paste the full schemaDefinition object here, formatted for readability>
 
 ### 2. Ready-to-run PowerShell submission command
-Produce a complete PowerShell Invoke-RestMethod command targeting
+Produce a complete PowerShell script targeting
 http://localhost:5047/api/source-schemas that submits all fields
 (name, description, type, feedUrl, schemaDefinition, metadata).
 schemaDefinition must be the compact single-line JSON string.
 The command must be copy-pasteable with no placeholders remaining.
+
+After the Invoke-RestMethod call, the script must also print the validation result:
+- "$($resp.validation.isSuccess)" — true or false
+- "$($resp.validation.totalEventsParsed) events parsed"
+- If validation.isSuccess is false: "$($resp.validation.errorMessage)"
 ```
 
 ---
 
 ## After running the command
 
-The response will include a `validation` object. Check:
+The script will print the validation result directly. Check:
 
-- `validation.isSuccess = true` and `validation.totalEventsParsed > 0` → ready for admin handoff
-- `validation.isSuccess = false` → copy `validation.errorMessage` back into ChatGPT and ask it to fix the schema, then resubmit
+- `True` + event count → ready for admin handoff (note the `sourceSchema.id` printed by the script)
+- `False` + error message → copy the error message back into ChatGPT and ask it to fix the schema, then resubmit
+
+If you want to inspect the full response, run `$resp | ConvertTo-Json -Depth 8` after the script completes.
 
 

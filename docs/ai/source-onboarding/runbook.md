@@ -48,6 +48,12 @@ Minimum:
 - mappings.startTime
 - validation.requiredFields = ["title", "startTime"]
 
+Mapping DSL rule:
+- mappings values must be strings only.
+- text/datetime fields use selector strings, for example: .event-title
+- attribute fields use selector@attribute, for example: a@href
+- do not emit object-style mappings with selector/type/attribute keys
+
 Identity requirement:
 1. explicit ID attribute
 2. detail URL
