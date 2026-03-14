@@ -2,6 +2,8 @@
 
 Use this prompt with autonomous agents:
 
+---
+
 Add one new HTML event source to HtmlLite SourceSchema end-to-end without human interaction.
 
 Inputs:
@@ -11,6 +13,17 @@ Inputs:
 - expectedCategory: <CATEGORY>
 - expectedRegion: <REGION>
 - expectedLanguage: <LANGUAGE>
+
+Before starting, read the following reference pages in order:
+
+1. [API Workflow](../../source-schemas/html-lite/api-workflow.md) — POST endpoint, request body fields, response shape, and how to interpret `validation.*`
+2. [Schema Basics](../../source-schemas/html-lite/schema-basics.md) — `schemaDefinition` structure: `eventCardSelector`, `mappings`, `validation`
+3. [Selectors](../../source-schemas/html-lite/selectors.md) — CSS selector and XPath syntax for extracting field values
+4. [Pagination](../../source-schemas/html-lite/pagination.md) — `nextLink`, `queryIncrement`, `pathIncrement`, and `fixedUrls` modes and their schema fields
+5. [Detail Pages](../../source-schemas/html-lite/detail-pages.md) — when and how to enable `detailPage` enrichment
+6. [Troubleshooting](../../source-schemas/html-lite/troubleshooting.md) — how to diagnose and fix validation failures before retrying
+
+Use this link if you need additional information to navigate to other docs: [Home](../../index.md)
 
 Constraints:
 - use only SourceSchemas endpoints
