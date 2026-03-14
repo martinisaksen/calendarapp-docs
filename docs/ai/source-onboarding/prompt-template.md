@@ -20,11 +20,11 @@ ChatGPT cannot call APIs on your behalf. Instead, this prompt instructs it to:
 
 Copy the block below, fill in the inputs, and paste it into ChatGPT.
 
-Before answering, read the docs under [HtmlLite](../../source-schemas/html-lite).
-
 ---
 
 ```
+Before answering, read the docs under **HtmlLite Source Submission** at https://martinisaksen.github.io/calendarapp-docs/.
+
 Build a complete HtmlLite SourceSchema submission for the following source.
 
 Inputs:
