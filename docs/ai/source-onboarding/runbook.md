@@ -50,8 +50,13 @@ Minimum:
 
 Mapping DSL rule:
 - mappings values must be strings only.
+- HtmlLite supports simple CSS-like selectors and XPath.
+- prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns, for example: .event-title or h2 a
+- use `xpath=` when you need unsupported CSS features like `>`, `.a, .b`, sibling logic, or positional filters
 - text/datetime fields use selector strings, for example: .event-title
 - attribute fields use selector@attribute, for example: a@href
+- do not use unsupported CSS operators directly; rewrite those selectors as XPath instead
+- if the page splits date and time, map `startDate` and `startTime`; `startTime` may be a time-only value or a visible range
 - do not emit object-style mappings with selector/type/attribute keys
 
 Identity requirement:

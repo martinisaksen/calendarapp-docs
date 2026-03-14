@@ -44,9 +44,14 @@ Instructions:
 
 Schema contract (must follow exactly):
 - mappings values must be strings, not objects.
+- HtmlLite supports simple CSS-like selectors and XPath.
+- Prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns such as `h2 a`.
+- Use `xpath=` when you need unsupported CSS features like `>`, comma-separated selector lists, sibling logic, or positional filters.
 - For text or datetime extraction: use "selector".
 - For attribute extraction: use "selector@attribute".
 - Do not output mapping objects like {"selector":"...","type":"...","attribute":"..."}.
+- Do not use unsupported CSS operators such as `>` or `.a, .b` unless you rewrite that selector as `xpath=`.
+- If the page splits date and time into separate nodes, map `startDate` and `startTime`. `startTime` may be a time-only value or a visible range like `10:30 AM - 11:30 AM`.
 - If detail page extraction is used, use detailPage.linkSelector and detailPage.detailMappings with string selectors only.
 - Pagination uses `pagination.type` (not `pagination.mode`).
 - Allowed pagination.type values: "nextLink", "queryIncrement", "pathIncrement", "fixedUrls".

@@ -15,6 +15,8 @@
 | `title` | Event title |
 | `startTime` | Event start datetime |
 | `endTime` | Event end datetime. Defaults to startTime + 1 hour if absent. |
+| `startDate` | Optional helper field for pages that split the calendar date from the visible time. When present, `startTime` may be a time-only value or a range like `10:30 AM - 11:30 AM`. |
+| `endDate` | Optional helper field used with `endTime` when the end date differs from the start date or the page exposes end date separately. |
 | `description` | Event description |
 | `location` | Location string |
 | `venueName` | Venue name |
@@ -69,3 +71,26 @@
   }
 }
 ```
+
+## Split Date And Time Example
+
+Use helper date mappings when the page exposes date and time in separate elements.
+
+```json
+{
+  "eventCardSelector": "article.event",
+  "mappings": {
+    "id": "h2 a@href",
+    "title": "h2 a",
+    "startDate": ".event__date",
+    "startTime": ".event__time",
+    "location": ".event__location",
+    "url": "h2 a@href"
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+In this mode, HtmlLite combines `startDate` with `startTime`. If `startTime` contains a visible range such as `10:30 AM - 11:30 AM`, the parser uses the first time for `StartTime` and the second time for `EndTime`.
