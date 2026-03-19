@@ -24,19 +24,26 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - User Guides:
-      - HtmlLite Source Submission:
-          - Overview: source-schemas/html-lite/overview.md
-          - API Workflow: source-schemas/html-lite/api-workflow.md
-          - Schema Basics: source-schemas/html-lite/schema-basics.md
-          - Selectors: source-schemas/html-lite/selectors.md
-          - Event Identity: source-schemas/html-lite/event-identity.md
-          - Time Handling: source-schemas/html-lite/time-handling.md
-          - Pagination: source-schemas/html-lite/pagination.md
-          - Detail Pages: source-schemas/html-lite/detail-pages.md
-          - Validation Checklist: source-schemas/html-lite/validation-checklist.md
-          - Troubleshooting: source-schemas/html-lite/troubleshooting.md
-  - AI Guides:
-      - Source Onboarding:
-          - Autonomous Runbook: ai/source-onboarding/runbook.md
-          - ChatGPT Prompt: ai/source-onboarding/prompt-template.md
+  - Start Here:
+    - Scope And Audience: index.md
+    - Human Workflow (Source Contributor): source-schemas/html-lite/overview.md
+    - AI Workflow (Autonomous Agent): ai/source-onboarding/runbook.md
+  - Human Source Contribution:
+    - Source Reliability Workflow:
+      - Validation Checklist: source-schemas/html-lite/validation-checklist.md
+      - Troubleshooting: source-schemas/html-lite/troubleshooting.md
+    - HtmlLite Reference:
+      - Overview: source-schemas/html-lite/overview.md
+      - API Workflow: source-schemas/html-lite/api-workflow.md
+      - Schema Basics: source-schemas/html-lite/schema-basics.md
+      - Selectors: source-schemas/html-lite/selectors.md
+      - Event Identity: source-schemas/html-lite/event-identity.md
+      - Time Handling: source-schemas/html-lite/time-handling.md
+      - Pagination: source-schemas/html-lite/pagination.md
+      - Detail Pages: source-schemas/html-lite/detail-pages.md
+      - Validation Checklist: source-schemas/html-lite/validation-checklist.md
+      - Troubleshooting: source-schemas/html-lite/troubleshooting.md
+  - AI Autonomous Onboarding:
+    - Autonomous Runbook: ai/source-onboarding/runbook.md
+    - ChatGPT Prompt (No HTTP Tools): ai/source-onboarding/prompt-template.md
+    - HtmlLite Overview: source-schemas/html-lite/overview.md

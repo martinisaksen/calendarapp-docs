@@ -1,186 +1,193 @@
 # Autonomous Source Onboarding Runbook
 
-Use this runbook for autonomous agents onboarding a new HtmlLite source with no human interaction.
+Use this runbook when an AI agent can execute the full source onboarding loop from a starting URL to a validated Draft SourceSchema.
 
----
+## Scope
 
-## Execution Rules
+- In scope: source onboarding and Draft submission via `POST /api/source-schemas`
+- Out of scope: admin-only approval operations
 
-- do not pause for manual review requests mid-run
-- if one strategy fails, automatically try the next strategy
-- stop only on terminal failure conditions
-- emit a final machine-readable summary
+## Non-Interactive Execution Rules
 
-## Before answering, read the following pages:
+- Do not pause for manual confirmation during execution.
+- If one extraction strategy fails, automatically try the next strategy.
+- Stop only on terminal failure conditions.
+- Always emit a final machine-readable report.
+- Do not propose or implement source-specific runtime code paths; prefer schema changes or generic reusable platform improvements.
 
-Read the docs under [HtmlLite](../../source-schemas/html-lite).
+## Required Reading
 
-## Step 1: Gather Inputs
+Before execution, read the HtmlLite reference pages under [HtmlLite Source Submission](../../source-schemas/html-lite/overview.md).
 
-Required:
-- sourceName
-- feedUrl
+## Input Contract
 
-Optional:
-- expectedLocation
-- expectedCategory
-- expectedRegion
-- expectedLanguage
-- knownEventCardSelector
-- knownTimeSelector
-- knownNextLinkSelector
+Required inputs:
+- `sourceName`
+- `feedUrl`
 
-## Step 2: Detect Viability
+Optional inputs:
+- `expectedLocation`
+- `expectedCategory`
+- `expectedRegion`
+- `expectedLanguage`
+- `knownEventCardSelector`
+- `knownTimeSelector`
+- `knownNextLinkSelector`
 
-1. Fetch feedUrl HTML.
-2. Confirm event cards exist in static HTML.
-3. If not, detect JS-rendered indicators.
-4. If JS-rendered, search for JSON API or ICS alternatives.
+## Output Contract
+
+The final output must be a single JSON object with:
+- `sourceName`
+- `feedUrl`
+- `schemaId`
+- `status` (`Success` or `Failed`)
+- `paginationModeUsed`
+- `detailEnrichmentUsed`
+- `validationTotalEventsParsed`
+- `validationIsSuccess`
+- `handoffReady`
+- `blockers` (array)
+- `nextActions` (array)
+
+## Step 1: Viability Detection
+
+1. Fetch `feedUrl` HTML.
+2. Confirm event cards are present in static HTML.
+3. If static cards are absent, detect JS-rendered indicators.
+4. If JS-rendered, try discovering JSON API or ICS alternatives.
 
 Terminal failure:
-- no static event HTML and no discoverable API or ICS alternative
+- no static event HTML and no discoverable API/ICS alternative
 
-## Step 3: Build Initial Schema
+## Step 2: Build Bootstrap Schema
 
-Minimum:
-- eventCardSelector
-- mappings.title
-- mappings.startTime
-- validation.requiredFields = ["title", "startTime"]
+Before finalizing mappings, define a field-completeness target against 3 to 5 known detail URLs:
+- `title`
+- `startTime`
+- `endTime`
+- `description`
+- `location` or `venueName`
+- `venueAddress`
+- `imageUrl`
+- `url`
+
+Parsing success without these fields is not considered complete onboarding.
+
+Build the smallest valid schema first:
+- `eventCardSelector`
+- `mappings.title`
+- parseable `mappings.startTime`
+- `validation.requiredFields = ["title", "startTime"]`
 
 Bootstrap strategy:
+1. Validate minimal schema quickly.
+2. If zero events, simplify `eventCardSelector` to a stable repeated title wrapper.
+3. If list-page time is unreliable, use temporary `literal:` `startTime`.
+4. Move real date/time extraction to detail page (`startDate` + `startTime`).
+5. Add pagination only after non-zero parse is achieved.
 
-1. Start with minimal schema and validate quickly.
-2. If zero events, simplify `eventCardSelector` to the most stable repeated title wrapper.
-3. If list-page time is not reliably parseable, use temporary `literal:` startTime.
-4. Move real time extraction to detail mappings using `startDate` + `startTime`.
-5. Only then add pagination breadth and richer fields.
+## Step 3: Apply Contract Rules
 
-Mapping DSL rule:
-- mappings values must be strings only.
-- HtmlLite supports simple CSS-like selectors and XPath.
-- prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns, for example: .event-title or h2 a
-- use `xpath=` when you need unsupported CSS features like `>`, `.a, .b`, sibling logic, or positional filters
-- text/datetime fields use selector strings, for example: .event-title
-- attribute fields use selector@attribute, for example: a@href
-- do not use unsupported CSS operators directly; rewrite those selectors as XPath instead
-- if the page splits date and time, map `startDate` and `startTime`; `startTime` may be a time-only value or a visible range
-- do not emit object-style mappings with selector/type/attribute keys
+Mapping DSL rules:
+- mapping values must be strings, never objects
+- use CSS-like selectors for simple tag/class/id/descendant patterns
+- use `xpath=` for unsupported CSS patterns (`>`, `.a, .b`, sibling logic, positional filters)
+- attribute extraction uses `selector@attribute` or `selector::attr(attribute)`
 
-Detail-page rule:
+Detail-page rules:
+- set `detailPage.enabled = true` only when list fields are incomplete
+- `detailPage.linkSelector` must resolve to a detail URL from list-card scope
+- `detailMappings` run against detail-page DOM and override non-empty list values
 
-- when list fields are incomplete, set `detailPage.enabled = true`
-- ensure `detailPage.linkSelector` resolves to a URL from list-card scope
-- run `detailMappings` against detail DOM and let these override list values
+Identity rules:
+1. explicit external ID mapping when available
+2. fallback to stable URL/permalink
+3. avoid title-derived IDs
 
-Identity requirement:
-1. explicit ID attribute
-2. detail URL
-3. permalink or slug
-4. stable fallback
-
-## Step 4: Choose Pagination Mode
+## Step 4: Choose Pagination Strategy
 
 Decision order:
-1. nextLink
-2. queryIncrement
-3. pathIncrement
-4. fixedUrls
-5. single page with pagination risk note
+1. `nextLink`
+2. `queryIncrement`
+3. `pathIncrement`
+4. `fixedUrls`
+5. single-page fallback with explicit pagination risk note
 
 Pagination contract:
-- Use `pagination.type` (not `pagination.mode`).
-- Allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`.
-- `query` is invalid. For query-based paging, use `queryIncrement` with `parameter`, `start`, and `step`.
+- use `pagination.type` (not `pagination.mode`)
+- allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
+- `query` is invalid; use `queryIncrement` with `parameter`, `start`, `step`
 
-## Step 5: Add Detail Enrichment If Needed
+## Step 5: Submit, Evaluate, Iterate
 
-Enable detailPage when list pages are insufficient.
+1. Submit Draft via `POST /api/source-schemas`.
+2. Read `response.validation`.
+3. If failed, adjust and resubmit.
 
-## Step 6: Submit Draft And Evaluate Validation
+When `validation.totalEventsParsed = 0`, retry in this order:
+1. simplify `eventCardSelector`
+2. verify `title` and parseable `startTime`
+3. apply temporary `literal:` `startTime`
+4. verify detail link and detail mappings
+5. add or correct pagination
 
-1. POST /api/source-schemas
-2. Read response.validation
-3. If validation.isSuccess is false, adjust selectors/pagination and resubmit
-
-Adjustment priority when validation.totalEventsParsed = 0:
-
-1. simplify eventCardSelector
-2. verify required field mappings (`title`, `startTime`)
-3. use `literal:` startTime for bootstrap if needed
-4. verify linkSelector and detail mappings
-5. add pagination only after non-zero parse is achieved
-
-Max attempts:
-- 8 schema refinement submissions
+Max refinement attempts:
+- 8 submissions
 
 Terminal failure:
-- no successful validation after max attempts
+- still no successful validation after max attempts
 
-## Step 7: Handoff To Admin Review
+## Step 6: Handoff Packet
 
-Produce admin handoff packet with:
-- schemaId
-- feedUrl
-- final schemaDefinition
-- validation.totalEventsParsed
-- validation.sampleEvents summary
-- validation.isSuccess
+If validation succeeds, produce handoff payload containing:
+- `schemaId`
+- `feedUrl`
+- final `schemaDefinition`
+- `validation.totalEventsParsed`
+- `validation.sampleEvents` summary
+- `validation.isSuccess`
 
-## Step 8: Final Report
+## Final Report Examples
 
-Output:
-- sourceName
-- feedUrl
-- schemaId
-- status
-- paginationModeUsed
-- detailEnrichmentUsed
-- validationTotalEventsParsed
-- validationIsSuccess
-- handoffReady
-- blockers
-- nextActions
-
-Success final report example:
+Success:
 
 ```json
 {
-	"sourceName": "Example Events",
-	"feedUrl": "https://www.example.org/events",
-	"schemaId": "1acba9be-d70c-435a-8efb-123e350638e5",
-	"status": "Success",
-	"paginationModeUsed": "nextLink",
-	"detailEnrichmentUsed": false,
-	"validationTotalEventsParsed": 12,
-	"validationIsSuccess": true,
-	"handoffReady": true,
-	"blockers": [],
-	"nextActions": [
-		"Send schemaId and validation summary to admin review queue"
-	]
+  "sourceName": "Example Events",
+  "feedUrl": "https://www.example.org/events",
+  "schemaId": "1acba9be-d70c-435a-8efb-123e350638e5",
+  "status": "Success",
+  "paginationModeUsed": "nextLink",
+  "detailEnrichmentUsed": false,
+  "validationTotalEventsParsed": 12,
+  "validationIsSuccess": true,
+  "handoffReady": true,
+  "blockers": [],
+  "nextActions": [
+    "Send schemaId and validation summary to admin review queue"
+  ]
 }
 ```
 
-Failure final report example:
+Failure:
 
 ```json
 {
-	"sourceName": "Example Events",
-	"feedUrl": "https://www.example.org/events",
-	"schemaId": "7d88c4a3-c9d4-4c4d-beb1-b9d71e590fa3",
-	"status": "Failed",
-	"paginationModeUsed": "queryIncrement",
-	"detailEnrichmentUsed": false,
-	"validationTotalEventsParsed": 0,
-	"validationIsSuccess": false,
-	"handoffReady": false,
-	"blockers": [
-		"validation.errorMessage: No parser registered for schema type HtmlLite"
-	],
-	"nextActions": [
-		"Adjust schemaDefinition and resubmit",
-		"If failure persists after max attempts, escalate with payload and error details"
-	]
+  "sourceName": "Example Events",
+  "feedUrl": "https://www.example.org/events",
+  "schemaId": "7d88c4a3-c9d4-4c4d-beb1-b9d71e590fa3",
+  "status": "Failed",
+  "paginationModeUsed": "queryIncrement",
+  "detailEnrichmentUsed": false,
+  "validationTotalEventsParsed": 0,
+  "validationIsSuccess": false,
+  "handoffReady": false,
+  "blockers": [
+    "validation.errorMessage: No parser registered for schema type HtmlLite"
+  ],
+  "nextActions": [
+    "Adjust schemaDefinition and resubmit",
+    "If failure persists after max attempts, escalate with payload and error details"
+  ]
 }
 ```

@@ -2,6 +2,10 @@
 
 Use HtmlLite when onboarding a new source that serves static HTML containing event cards.
 
+This reference is shared by both tracks:
+- human source contributor workflow
+- autonomous AI source onboarding workflow
+
 ## HtmlLite Quick Reference
 
 - `eventCardSelector`: selector for repeating event nodes
@@ -27,6 +31,21 @@ Use this deterministic order to avoid 0-event failures:
 6. Re-validate after each change.
 
 If list-page time is unreliable, use a temporary parseable `literal:` start time to keep cards from being dropped, then overwrite with detail-page `startDate` + `startTime` mappings.
+
+## Human Workflow Variant
+
+Use the same order as AI-first workflow, but validate after each manual selector change and keep notes on:
+- why each selector was chosen
+- what failed and how it was corrected
+- final validation evidence for admin handoff
+
+## Reliability Principles
+
+- Parse success is necessary but not sufficient. Validate field completeness for product-facing fields.
+- Prefer schema-first fixes over runtime code changes.
+- Runtime/platform code changes are acceptable only when generic and reusable across all sources.
+- If list cards are teaser-only, use detail-page enrichment instead of brittle list selectors.
+- For API-backed sources, verify field projection is not suppressing rich fields such as long descriptions or address fields.
 
 ## End-to-End Flow
 
@@ -56,3 +75,8 @@ The submit endpoint performs server-side fetch/parse validation and returns:
 Quick interpretation:
 - Success: validation.isSuccess = true and validation.totalEventsParsed > 0
 - Failure: validation.isSuccess = false and validation.errorMessage explains what to fix
+
+See also:
+- [API Workflow](api-workflow.md)
+- [Validation Checklist](validation-checklist.md)
+- [Troubleshooting](troubleshooting.md)

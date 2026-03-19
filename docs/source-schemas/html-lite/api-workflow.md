@@ -1,5 +1,7 @@
 # HtmlLite API Workflow
 
+This page defines the API-side contract for both manual and autonomous onboarding.
+
 ## Step 1: Submit Draft (With Built-in Validation)
 
 Call:
@@ -27,6 +29,10 @@ Response (201 or 200) includes:
 - validation.totalEventsParsed
 - validation.sampleEvents
 - validation.errorMessage
+
+Operational notes:
+- Re-submitting the same Draft `feedUrl` is expected during refinement.
+- A successful HTTP response does not imply parsing success. Always inspect `validation`.
 
 ## Response Examples
 
@@ -97,11 +103,22 @@ Validation failure:
 - review validation.errorMessage
 - fix schema and re-submit the same feedUrl (returns 200 and overwrites the Draft)
 
+Recommended interpretation gates:
+1. `validation.isSuccess` is `true`
+2. `validation.totalEventsParsed` is non-zero and plausible
+3. `validation.sampleEvents` show valid title/startTime/url values
+
 ## Step 3: Handoff To Admin Review
 
 After Draft submission, hand off schema ID and validation notes to admins.
 
 Community and external AI contributors should not call admin-only approval or trigger endpoints.
+
+Handoff packet should include:
+- sourceSchema ID
+- feedUrl
+- final schemaDefinition
+- validation summary (`isSuccess`, `totalEventsParsed`, sample event quality)
 
 ## PowerShell Example
 
@@ -153,3 +170,8 @@ if (-not $validation.isSuccess) {
   "Validation error: $($validation.errorMessage)"
 }
 ```
+
+Related references:
+- [Schema Basics](schema-basics.md)
+- [Validation Checklist](validation-checklist.md)
+- [Troubleshooting](troubleshooting.md)

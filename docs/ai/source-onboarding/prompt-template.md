@@ -14,6 +14,8 @@ ChatGPT cannot call APIs on your behalf. Instead, this prompt instructs it to:
 2. Build the complete `schemaDefinition`
 3. Output a copy-pasteable PowerShell command you run yourself to submit it
 
+The generated output is successful only if it is deterministic and directly executable with no placeholders.
+
 ---
 
 ## Prompt
@@ -42,7 +44,8 @@ Instructions:
    - Phase A (bootstrap): `eventCardSelector` + minimal mappings (`title`, `url`, parseable `startTime`) + validation.requiredFields.
    - Phase B: add `id`, pagination, and detailPage mappings.
 3. If list-page time is unreliable, use `literal:` for bootstrap `startTime` and extract real `startDate` + `startTime` from detail pages.
-4. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (no line breaks).
+4. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (single line).
+5. Use only values that can be inferred from page content. Do not invent fields not evidenced by the page.
 
 Schema contract (must follow exactly):
 - mappings values must be strings, not objects.
@@ -64,7 +67,7 @@ Schema contract (must follow exactly):
 Output exactly two things and nothing else:
 
 ### 1. schemaDefinition JSON (pretty-printed for review)
-<paste the full schemaDefinition object here, formatted for readability>
+Print only valid JSON for schemaDefinition.
 
 ### 2. Ready-to-run PowerShell submission command
 Produce a complete PowerShell script targeting
@@ -72,6 +75,14 @@ http://localhost:5047/api/source-schemas that submits all fields
 (name, description, type, feedUrl, schemaDefinition, metadata).
 schemaDefinition must be the compact single-line JSON string.
 The command must be copy-pasteable with no placeholders remaining.
+
+The script must:
+- assign schemaDefinition from the pretty JSON via `ConvertTo-Json -Compress`
+- submit with `Invoke-RestMethod`
+- print schema ID
+- print validation.isSuccess
+- print validation.totalEventsParsed
+- print validation.errorMessage when failed
 
 After the Invoke-RestMethod call, the script must also print the validation result:
 - "$($resp.validation.isSuccess)" — true or false
@@ -83,6 +94,8 @@ Before finalizing output, self-check:
 - selectors avoid unsupported CSS operators unless rewritten with `xpath=`
 - requiredFields align with mapped fields
 - linkSelector returns a URL
+- pagination.type is valid
+- schemaDefinition compact string is single-line
 ```
 
 ---
