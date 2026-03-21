@@ -26,12 +26,22 @@ nav:
   - Home: index.md
   - Start Here:
     - Scope And Audience: index.md
-    - Human Workflow (Source Contributor): source-schemas/html-lite/overview.md
+    - Choose A Source Type: source-schemas/choose-source-type.md
+    - Submission API And Validation: source-schemas/submission-api-and-validation.md
+    - Human Workflow (Source Contributor): source-schemas/choose-source-type.md
     - AI Workflow (Autonomous Agent): ai/source-onboarding/runbook.md
   - Human Source Contribution:
-    - Source Reliability Workflow:
+    - Shared Workflow:
+      - Choose A Source Type: source-schemas/choose-source-type.md
+      - Submission API And Validation: source-schemas/submission-api-and-validation.md
       - Validation Checklist: source-schemas/html-lite/validation-checklist.md
       - Troubleshooting: source-schemas/html-lite/troubleshooting.md
+    - Ics Reference:
+      - Overview: source-schemas/ics.md
+    - Rss Reference:
+      - Overview: source-schemas/rss.md
+    - JsonApi Reference:
+      - Overview: source-schemas/json-api.md
     - HtmlLite Reference:
       - Overview: source-schemas/html-lite/overview.md
       - API Workflow: source-schemas/html-lite/api-workflow.md
@@ -46,4 +56,6 @@ nav:
   - AI Autonomous Onboarding:
     - Autonomous Runbook: ai/source-onboarding/runbook.md
     - ChatGPT Prompt (No HTTP Tools): ai/source-onboarding/prompt-template.md
+    - Choose A Source Type: source-schemas/choose-source-type.md
+    - Submission API And Validation: source-schemas/submission-api-and-validation.md
     - HtmlLite Overview: source-schemas/html-lite/overview.md

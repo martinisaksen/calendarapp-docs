@@ -13,38 +13,54 @@ It is intentionally split into two execution tracks:
 ### Human Source Contributors
 
 Start here:
-1. [HtmlLite Overview](source-schemas/html-lite/overview.md)
-2. [HtmlLite API Workflow](source-schemas/html-lite/api-workflow.md)
-3. [Validation Checklist](source-schemas/html-lite/validation-checklist.md)
-4. [Troubleshooting](source-schemas/html-lite/troubleshooting.md)
+1. [Choose A Source Type](source-schemas/choose-source-type.md)
+2. [Submission API And Validation](source-schemas/submission-api-and-validation.md)
+3. [Ics Source Guide](source-schemas/ics.md)
+4. [Rss Source Guide](source-schemas/rss.md)
+5. [JsonApi Source Guide](source-schemas/json-api.md)
+6. [HtmlLite Overview](source-schemas/html-lite/overview.md)
 
-Use this track when a person is inspecting pages, refining selectors, and submitting drafts.
+Use this track when a person is inspecting feeds, choosing the right source type, refining schemaDefinition, and submitting drafts.
 
 ### Autonomous AI Agents
 
 Start here:
 1. [Autonomous Runbook](ai/source-onboarding/runbook.md)
-2. [HtmlLite Overview](source-schemas/html-lite/overview.md)
-3. [HtmlLite API Workflow](source-schemas/html-lite/api-workflow.md)
+2. [Choose A Source Type](source-schemas/choose-source-type.md)
+3. [Submission API And Validation](source-schemas/submission-api-and-validation.md)
 4. [ChatGPT Prompt (No HTTP tool use)](ai/source-onboarding/prompt-template.md)
 
 Use this track when an agent can browse pages and execute API calls end-to-end, or when a chat model must generate a human-runnable submission script.
 
 ## Source Onboarding Lifecycle
 
-1. Discover a starting URL and verify static-HTML viability.
-2. Build a minimal schema (`eventCardSelector`, `title`, parseable `startTime`).
-3. Submit Draft and inspect validation (`isSuccess`, `totalEventsParsed`, `sampleEvents`).
-4. Add identity, pagination, and detail enrichment.
-5. Re-submit until validation is stable and non-zero.
+1. Discover a starting URL and identify the most stable source type.
+2. Build the smallest valid `schemaDefinition` for that type.
+3. Validate with `POST /api/source-schemas/test-fetch`.
+4. Submit a contributor draft with `POST /api/source-schemas/community-submissions`.
+5. Re-test and re-submit until validation is stable and non-zero.
 6. Hand off schema ID and validation notes for admin review.
+
+## Supported Source Types
+
+| Type | Use It When | Avoid It When | Primary Reference |
+|---|---|---|---|
+| `Ics` | The source publishes a valid iCalendar or `.ics` feed | The source only offers HTML or JSON | [Ics Source Guide](source-schemas/ics.md) |
+| `Rss` | The source publishes RSS or Atom where each item represents an event | The feed is not event-oriented or lacks usable dates | [Rss Source Guide](source-schemas/rss.md) |
+| `JsonApi` | The site exposes event data through JSON endpoints | Static HTML or ICS already provides the same data more simply | [JsonApi Source Guide](source-schemas/json-api.md) |
+| `HtmlLite` | The site renders event cards in static HTML without JavaScript-only hydration | The page is JS-rendered and there is a better structured feed | [HtmlLite Overview](source-schemas/html-lite/overview.md) |
 
 ## Core Reference Pages
 
 | Area | Page | Purpose |
 |---|---|---|
-| Reliability | [Validation Checklist](source-schemas/html-lite/validation-checklist.md) | Field-completeness and handoff readiness gates |
-| Reliability | [Troubleshooting](source-schemas/html-lite/troubleshooting.md) | Recovery order for zero-parse and validation failures |
+| Shared | [Choose A Source Type](source-schemas/choose-source-type.md) | Decision guide for picking the right parser and schema contract |
+| Shared | [Submission API And Validation](source-schemas/submission-api-and-validation.md) | Common payload envelope, test-fetch flow, and contributor-safe endpoints |
+| Shared | [Validation Checklist](source-schemas/html-lite/validation-checklist.md) | Field-completeness and handoff readiness gates |
+| Shared | [Troubleshooting](source-schemas/html-lite/troubleshooting.md) | Recovery order for zero-parse and validation failures |
+| Ics | [Guide](source-schemas/ics.md) | When to use ICS, minimal schemaDefinition, and validation notes |
+| Rss | [Guide](source-schemas/rss.md) | RSS extraction rules and contributor workflow |
+| JsonApi | [Guide](source-schemas/json-api.md) | JSON path mappings, pagination, auth, and advanced validation rules |
 | HtmlLite | [Overview](source-schemas/html-lite/overview.md) | Contract summary and deterministic build order |
 | HtmlLite | [API Workflow](source-schemas/html-lite/api-workflow.md) | Draft submission behavior and response interpretation |
 | HtmlLite | [Schema Basics](source-schemas/html-lite/schema-basics.md) | Minimal schema and progressive enrichment pattern |

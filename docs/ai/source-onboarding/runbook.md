@@ -4,7 +4,7 @@ Use this runbook when an AI agent can execute the full source onboarding loop fr
 
 ## Scope
 
-- In scope: source onboarding and Draft submission via `POST /api/source-schemas`
+- In scope: source onboarding, `test-fetch`, and contributor Draft submission via `POST /api/source-schemas/community-submissions`
 - Out of scope: admin-only approval operations
 
 ## Non-Interactive Execution Rules
@@ -17,7 +17,10 @@ Use this runbook when an AI agent can execute the full source onboarding loop fr
 
 ## Required Reading
 
-Before execution, read the HtmlLite reference pages under [HtmlLite Source Submission](../../source-schemas/html-lite/overview.md).
+Before execution, read:
+- [Choose A Source Type](../../source-schemas/choose-source-type.md)
+- [Submission API And Validation](../../source-schemas/submission-api-and-validation.md)
+- the type-specific page that matches the chosen source type
 
 ## Input Contract
 
@@ -39,6 +42,7 @@ Optional inputs:
 The final output must be a single JSON object with:
 - `sourceName`
 - `feedUrl`
+- `sourceType`
 - `schemaId`
 - `status` (`Success` or `Failed`)
 - `paginationModeUsed`
@@ -49,17 +53,30 @@ The final output must be a single JSON object with:
 - `blockers` (array)
 - `nextActions` (array)
 
-## Step 1: Viability Detection
+## Step 1: Identify The Best Source Type
 
-1. Fetch `feedUrl` HTML.
-2. Confirm event cards are present in static HTML.
-3. If static cards are absent, detect JS-rendered indicators.
-4. If JS-rendered, try discovering JSON API or ICS alternatives.
+Prefer the most structured option available:
+1. `Ics`
+2. `Rss`
+3. `JsonApi`
+4. `HtmlLite`
+
+Decision loop:
+1. Check whether `feedUrl` is already an ICS or RSS feed.
+2. If not, inspect the page or network calls for a JSON endpoint that returns event objects.
+3. Use HtmlLite only when the events are present in static HTML and no better structured feed exists.
 
 Terminal failure:
-- no static event HTML and no discoverable API/ICS alternative
+- no usable ICS, RSS, JsonApi, or HtmlLite source can be found
 
-## Step 2: Build Bootstrap Schema
+## Step 2: Build The Smallest Valid Schema For The Chosen Type
+
+Structured-source bootstrap rules:
+- `Ics`: use a minimal validation-only schemaDefinition unless the source needs stricter required fields
+- `Rss`: define `extractionRules` and map at least `title` and parseable `startTime`
+- `JsonApi`: define `eventArrayPath` plus `mappings`, then add pagination or auth only if needed
+
+HtmlLite bootstrap rules remain below.
 
 Before finalizing mappings, define a field-completeness target against 3 to 5 known detail URLs:
 - `title`
@@ -86,7 +103,23 @@ Bootstrap strategy:
 4. Move real date/time extraction to detail page (`startDate` + `startTime`).
 5. Add pagination only after non-zero parse is achieved.
 
-## Step 3: Apply Contract Rules
+## Step 3: Apply Type-Specific Contract Rules
+
+For every type:
+- `schemaDefinition` must serialize as a JSON string in the request body
+- prefer the contributor-safe workflow: `test-fetch` first, then `community-submissions`
+- never call admin approval endpoints
+
+For `JsonApi`:
+- `schemaVersion` must be `1` or `2` when provided
+- advanced features require `schemaVersion = 2`
+- `requestWorkflow` and `pagination` cannot both be configured
+
+For `Rss`:
+- `extractionRules` values should resolve against each feed item
+
+For `Ics`:
+- rely on the feed for title, start, end, location, and UID when present
 
 Mapping DSL rules:
 - mapping values must be strings, never objects
@@ -106,6 +139,8 @@ Identity rules:
 
 ## Step 4: Choose Pagination Strategy
 
+Only `JsonApi` and `HtmlLite` commonly need pagination.
+
 Decision order:
 1. `nextLink`
 2. `queryIncrement`
@@ -118,11 +153,12 @@ Pagination contract:
 - allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
 - `query` is invalid; use `queryIncrement` with `parameter`, `start`, `step`
 
-## Step 5: Submit, Evaluate, Iterate
+## Step 5: Test, Submit, Evaluate, Iterate
 
-1. Submit Draft via `POST /api/source-schemas`.
-2. Read `response.validation`.
-3. If failed, adjust and resubmit.
+1. Run `POST /api/source-schemas/test-fetch`.
+2. If test-fetch succeeds, submit Draft via `POST /api/source-schemas/community-submissions`.
+3. Read `response.validation`.
+4. If failed, adjust and resubmit.
 
 When `validation.totalEventsParsed = 0`, retry in this order:
 1. simplify `eventCardSelector`
@@ -155,6 +191,7 @@ Success:
 {
   "sourceName": "Example Events",
   "feedUrl": "https://www.example.org/events",
+  "sourceType": "HtmlLite",
   "schemaId": "1acba9be-d70c-435a-8efb-123e350638e5",
   "status": "Success",
   "paginationModeUsed": "nextLink",
@@ -175,6 +212,7 @@ Failure:
 {
   "sourceName": "Example Events",
   "feedUrl": "https://www.example.org/events",
+  "sourceType": "HtmlLite",
   "schemaId": "7d88c4a3-c9d4-4c4d-beb1-b9d71e590fa3",
   "status": "Failed",
   "paginationModeUsed": "queryIncrement",
@@ -183,7 +221,7 @@ Failure:
   "validationIsSuccess": false,
   "handoffReady": false,
   "blockers": [
-    "validation.errorMessage: No parser registered for schema type HtmlLite"
+    "validation.errorMessage: Selector returned zero event cards"
   ],
   "nextActions": [
     "Adjust schemaDefinition and resubmit",

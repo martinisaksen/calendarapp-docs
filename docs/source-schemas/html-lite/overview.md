@@ -2,6 +2,8 @@
 
 Use HtmlLite when onboarding a new source that serves static HTML containing event cards.
 
+If you are not sure the source should use HtmlLite, start with [Choose A Source Type](../choose-source-type.md) before building selectors.
+
 This reference is shared by both tracks:
 - human source contributor workflow
 - autonomous AI source onboarding workflow
@@ -25,7 +27,7 @@ Use this deterministic order to avoid 0-event failures:
 
 1. Find one stable repeating card selector.
 2. Map only `title`, `url`, and a parseable `startTime` first.
-3. Validate with `POST /api/source-schemas`.
+3. Validate with `POST /api/source-schemas/test-fetch`.
 4. Add `id` and pagination.
 5. Add `detailPage` enrichment for time/location/description/image if list fields are incomplete.
 6. Re-validate after each change.
@@ -52,12 +54,13 @@ Use the same order as AI-first workflow, but validate after each manual selector
 1. Confirm source compatibility with static HTML parsing.
 2. Build a minimal schema.
 3. Add identity, pagination, and detail-page rules.
-4. Submit Draft and review backend validation result.
+4. Test fetch, then submit Draft and review backend validation result.
 5. Handoff schema ID and validation notes for admin review.
 
 ## Endpoint Summary
 
-- POST /api/source-schemas
+- POST /api/source-schemas/test-fetch
+- POST /api/source-schemas/community-submissions
 
 ## Request Contract Rule
 

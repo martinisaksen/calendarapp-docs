@@ -2,10 +2,24 @@
 
 This page defines the API-side contract for both manual and autonomous onboarding.
 
-## Step 1: Submit Draft (With Built-in Validation)
+Use this page only after you have already chosen HtmlLite as the source type. For shared contributor rules that apply to every source type, see [Submission API And Validation](../submission-api-and-validation.md).
+
+## Step 1: Test Fetch (No Draft Created)
 
 Call:
-- POST /api/source-schemas
+- POST /api/source-schemas/test-fetch
+
+Include:
+- type = HtmlLite
+- feedUrl
+- schemaDefinition as JSON string
+
+Use test-fetch while refining selectors so you do not create unnecessary draft revisions.
+
+## Step 2: Submit Community Draft (With Built-in Validation)
+
+Call:
+- POST /api/source-schemas/community-submissions
 
 Include:
 - name
@@ -79,7 +93,7 @@ Failure example:
     "isSuccess": false,
     "totalEventsParsed": 0,
     "sampleEvents": [],
-    "errorMessage": "No parser registered for schema type HtmlLite"
+    "errorMessage": "Selector returned zero event cards"
   }
 }
 ```
@@ -92,7 +106,7 @@ Approved source error (400):
 }
 ```
 
-## Step 2: Review Validation Result
+## Step 3: Review Validation Result
 
 Validation pass:
 - validation.isSuccess = true
@@ -108,7 +122,7 @@ Recommended interpretation gates:
 2. `validation.totalEventsParsed` is non-zero and plausible
 3. `validation.sampleEvents` show valid title/startTime/url values
 
-## Step 3: Handoff To Admin Review
+## Step 4: Handoff To Admin Review
 
 After Draft submission, hand off schema ID and validation notes to admins.
 
@@ -155,7 +169,7 @@ $submitBody = @{
   }
 } | ConvertTo-Json -Depth 12
 
-$created = Invoke-RestMethod -Uri $base -Method Post -ContentType 'application/json' -Body $submitBody
+$created = Invoke-RestMethod -Uri "$base/community-submissions" -Method Post -ContentType 'application/json' -Body $submitBody
 $created | ConvertTo-Json -Depth 8
 
 # Save schema ID for admin handoff
@@ -172,6 +186,8 @@ if (-not $validation.isSuccess) {
 ```
 
 Related references:
+- [Choose A Source Type](../choose-source-type.md)
+- [Submission API And Validation](../submission-api-and-validation.md)
 - [Schema Basics](schema-basics.md)
 - [Validation Checklist](validation-checklist.md)
 - [Troubleshooting](troubleshooting.md)

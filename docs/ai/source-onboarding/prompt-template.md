@@ -1,6 +1,6 @@
 # ChatGPT Schema Generation Prompt
 
-Use this prompt with **standard ChatGPT or any plain chat interface** to generate a schema and a ready-to-run submission command.
+Use this prompt with **standard ChatGPT or any plain chat interface** to choose the right source type, generate a schema, and output a ready-to-run submission command.
 
 > If you are using an AI agent with HTTP tool use (custom GPT with API Actions, etc.), use the [Autonomous Runbook](runbook.md) instead.
 
@@ -10,9 +10,9 @@ Use this prompt with **standard ChatGPT or any plain chat interface** to generat
 
 ChatGPT cannot call APIs on your behalf. Instead, this prompt instructs it to:
 
-1. Browse the feed URL and inspect the HTML structure
+1. Browse the feed URL and determine whether the best source type is `Ics`, `Rss`, `JsonApi`, or `HtmlLite`
 2. Build the complete `schemaDefinition`
-3. Output a copy-pasteable PowerShell command you run yourself to submit it
+3. Output copy-pasteable PowerShell commands for test-fetch and community submission
 
 The generated output is successful only if it is deterministic and directly executable with no placeholders.
 
@@ -25,9 +25,9 @@ Copy the block below, fill in the inputs, and paste it into ChatGPT.
 ---
 
 ```
-Before answering, read the docs under **HtmlLite Source Submission** at https://martinisaksen.github.io/calendarapp-docs/.
+Before answering, read the docs under **Choose A Source Type** and **Submission API And Validation** at https://martinisaksen.github.io/calendarapp-docs/.
 
-Build a complete HtmlLite SourceSchema submission for the following source.
+Build a complete contributor-safe SourceSchema submission for the following source.
 
 Inputs:
 - sourceName: <SOURCE_NAME>
@@ -38,47 +38,45 @@ Inputs:
 - expectedLanguage: <LANGUAGE> (optional — default "en" if omitted)
 
 Instructions:
-1. Browse <FEED_URL> and identify: event card selector, field mappings
-   (title, startTime, endTime, location, url, id), and pagination mode.
-2. Build schema in phases:
-   - Phase A (bootstrap): `eventCardSelector` + minimal mappings (`title`, `url`, parseable `startTime`) + validation.requiredFields.
-   - Phase B: add `id`, pagination, and detailPage mappings.
-3. If list-page time is unreliable, use `literal:` for bootstrap `startTime` and extract real `startDate` + `startTime` from detail pages.
+1. Browse <FEED_URL> and choose the most stable source type in this order: `Ics`, `Rss`, `JsonApi`, `HtmlLite`.
+2. Explain the chosen source type in one short sentence.
+3. Build the smallest valid schema for that type, then enrich it only if needed.
 4. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (single line).
-5. Use only values that can be inferred from page content. Do not invent fields not evidenced by the page.
+5. Use only values that can be inferred from feed or page content. Do not invent fields not evidenced by the source.
 
 Schema contract (must follow exactly):
-- mappings values must be strings, not objects.
-- HtmlLite supports simple CSS-like selectors and XPath.
-- Prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns such as `h2 a`.
-- Use `xpath=` when you need unsupported CSS features like `>`, comma-separated selector lists, sibling logic, or positional filters.
-- For text or datetime extraction: use "selector".
-- For attribute extraction: use "selector@attribute".
-- Do not output mapping objects like {"selector":"...","type":"...","attribute":"..."}.
-- Do not use unsupported CSS operators such as `>` or `.a, .b` unless you rewrite that selector as `xpath=`.
-- If the page splits date and time into separate nodes, map `startDate` and `startTime`. `startTime` may be a time-only value or a visible range like `10:30 AM - 11:30 AM`.
-- If detail page extraction is used, use detailPage.linkSelector and detailPage.detailMappings with string selectors only.
-- `detailPage.enabled` must be explicitly set to true when detail enrichment is required.
-- `detailPage.linkSelector` must resolve to a URL from the list-card scope.
-- Pagination uses `pagination.type` (not `pagination.mode`).
-- Allowed pagination.type values: "nextLink", "queryIncrement", "pathIncrement", "fixedUrls".
-- Do not use "query" as a pagination type. Use "queryIncrement" with parameter/start/step.
+- `schemaDefinition` must be valid JSON and will be sent as a compact JSON string.
+- For `Ics`, use a validation-only schema unless stricter checks are needed.
+- For `Rss`, use `extractionRules` and map at least `title` and `startTime`.
+- For `JsonApi`, include `eventArrayPath` and `mappings`; use `schemaVersion` 1 or 2 when needed.
+- For `JsonApi`, advanced features require `schemaVersion = 2`.
+- For `JsonApi`, do not configure both `requestWorkflow` and `pagination`.
+- For `HtmlLite`, mappings values must be strings, not objects.
+- For `HtmlLite`, prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns such as `h2 a`.
+- For `HtmlLite`, use `xpath=` when you need unsupported CSS features like `>`, comma-separated selector lists, sibling logic, or positional filters.
+- For `HtmlLite`, attribute extraction uses `selector@attribute` or `selector::attr(attribute)`.
+- For `HtmlLite`, if detail page extraction is used, use detailPage.linkSelector and detailPage.detailMappings with string selectors only.
+- For `HtmlLite`, allowed pagination.type values are `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`.
 
-Output exactly two things and nothing else:
+Output exactly three things and nothing else:
 
-### 1. schemaDefinition JSON (pretty-printed for review)
+### 1. Chosen source type
+Print only one of: `Ics`, `Rss`, `JsonApi`, `HtmlLite`.
+
+### 2. schemaDefinition JSON (pretty-printed for review)
 Print only valid JSON for schemaDefinition.
 
-### 2. Ready-to-run PowerShell submission command
+### 3. Ready-to-run PowerShell test and submission commands
 Produce a complete PowerShell script targeting
-http://localhost:5047/api/source-schemas that submits all fields
+http://localhost:5047/api/source-schemas that first calls `/test-fetch` and then `/community-submissions` with all fields
 (name, description, type, feedUrl, schemaDefinition, metadata).
 schemaDefinition must be the compact single-line JSON string.
 The command must be copy-pasteable with no placeholders remaining.
 
 The script must:
 - assign schemaDefinition from the pretty JSON via `ConvertTo-Json -Compress`
-- submit with `Invoke-RestMethod`
+- call test-fetch with `Invoke-RestMethod`
+- submit to `community-submissions` with `Invoke-RestMethod`
 - print schema ID
 - print validation.isSuccess
 - print validation.totalEventsParsed
@@ -90,11 +88,12 @@ After the Invoke-RestMethod call, the script must also print the validation resu
 - If validation.isSuccess is false: "$($resp.validation.errorMessage)"
 
 Before finalizing output, self-check:
-- all mappings are strings
-- selectors avoid unsupported CSS operators unless rewritten with `xpath=`
+- schema matches the chosen source type
+- all required fields for that source type are present
+- HtmlLite selectors avoid unsupported CSS operators unless rewritten with `xpath=`
 - requiredFields align with mapped fields
-- linkSelector returns a URL
-- pagination.type is valid
+- linkSelector returns a URL when detailPage is used
+- pagination.type is valid when used
 - schemaDefinition compact string is single-line
 ```
 
