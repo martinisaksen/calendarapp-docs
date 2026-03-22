@@ -44,6 +44,8 @@ Instructions:
 4. Build the smallest valid schema for that type, then enrich it only if needed.
 5. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (single line).
 6. Use only values that can be inferred from feed or page content. Do not invent fields not evidenced by the source.
+7. If JsonApi parsing returns zero events, debug in this order: eventArrayPath scope, mapping scope, required headers, then pagination/workflow.
+8. Change one variable per retry and explain what changed.
 
 Schema contract (must follow exactly):
 - `schemaDefinition` must be valid JSON and will be sent as a compact JSON string.
@@ -102,6 +104,8 @@ Before finalizing output, self-check:
 - schema matches the chosen source type
 - a higher-priority source type was not incorrectly skipped
 - all required fields for that source type are present
+- event path points to repeated event records, not wrapper/config nodes
+- requiredFields are present in mapped output
 - HtmlLite selectors avoid unsupported CSS operators unless rewritten with `xpath=`
 - HtmlLite selectors do not use commas
 - requiredFields align with mapped fields

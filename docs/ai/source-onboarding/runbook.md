@@ -66,6 +66,13 @@ Decision loop:
 2. If not, inspect the page or network calls for a JSON endpoint that returns event objects.
 3. Use HtmlLite only when the events are present in static HTML and no better structured feed exists.
 
+Evidence requirements before locking source type:
+
+1. Endpoint or page response can be fetched reliably at run time.
+2. Repeated event records are visible in payload (not only configuration wrappers).
+3. At least one sample record contains `title` and time/date evidence.
+4. Selected type is still highest-priority among usable options.
+
 Terminal failure:
 - no usable ICS, RSS, JsonApi, or HtmlLite source can be found
 
@@ -75,6 +82,13 @@ Structured-source bootstrap rules:
 - `Ics`: use a minimal validation-only schemaDefinition unless the source needs stricter required fields
 - `Rss`: define `extractionRules` and map at least `title` and parseable `startTime`
 - `JsonApi`: define `eventArrayPath` plus `mappings`, then add pagination or auth only if needed
+
+JsonApi bootstrap guardrails:
+
+1. Start with minimal mappings (`title`, `startTime`) and requiredFields aligned to those mappings.
+2. Validate event path first, then expand field coverage.
+3. If zero events parse, adjust one variable at a time (path, mapping scope, headers, pagination).
+4. Capture parser-compatibility notes when a path syntax assumption fails.
 
 HtmlLite bootstrap rules remain below.
 
@@ -159,6 +173,15 @@ Pagination contract:
 2. If test-fetch succeeds, submit Draft via `POST /api/source-schemas/community-submissions`.
 3. Read `response.validation`.
 4. If failed, adjust and resubmit.
+
+For every iteration, record:
+
+1. attempted change
+2. `validation.isSuccess`
+3. `validation.totalEventsParsed`
+4. any `validation.errorMessage`
+
+Do not batch multiple schema changes in a single retry unless blocked by request-shape validity.
 
 When `validation.totalEventsParsed = 0`, retry in this order:
 1. simplify `eventCardSelector`

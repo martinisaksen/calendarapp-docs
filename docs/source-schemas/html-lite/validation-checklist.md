@@ -19,6 +19,7 @@ Recommended additional checks:
 - sample events include expected city/region context
 - URLs resolve to canonical event pages (not list-only links)
 - detailPage.linkSelector resolves within the card scope
+- runtime flag `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is enabled when detail mappings are expected to populate fields
 
 ## Submission Checklist
 

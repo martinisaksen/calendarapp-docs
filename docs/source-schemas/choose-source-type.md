@@ -101,6 +101,25 @@ https://example.org/events
 4. Submit with `POST /api/source-schemas/community-submissions`.
 5. Re-test and re-submit until the validation result is stable.
 
+## Generic Source Discovery Workflow
+
+Use this sequence for any starting URL before writing a schema:
+
+1. Capture evidence from the initial response first.
+2. Check for structured feed links (`.ics`, RSS/Atom) in page HTML and metadata.
+3. If no feed is obvious, inspect network activity and script-referenced endpoints for JSON payloads that contain event objects.
+4. Validate that the discovered payload includes repeated event records (not only UI config or shell data).
+5. Choose the highest-priority type that is truly usable from validated payload evidence.
+
+Evidence checklist before committing to a type:
+
+1. The candidate endpoint returns parseable content (`text/calendar`, XML feed, or JSON object/array).
+2. At least one sample event contains `title` and `start`/time evidence.
+3. The path from root to event collection can be described deterministically.
+4. Event count is plausible for the source (not just one test row unless expected).
+
+If any checklist item fails, continue discovery before picking a type.
+
 ## Proof Before You Pick HtmlLite
 
 Before you choose `HtmlLite`, you should be able to cite all of these from the initial HTML response:

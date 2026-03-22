@@ -290,6 +290,30 @@ Treat a draft as ready for admin review only when:
 3. `validation.sampleEvents` show good coverage for title, time, URL, and location when available
 4. the source type is still the best available source after testing
 
+## Iteration Strategy For Any Source Type
+
+Use a strict one-change-at-a-time loop:
+
+1. Start with the smallest valid schema shape for the chosen type.
+2. Run `test-fetch` and capture `isSuccess`, `totalEventsParsed`, `sampleEvents`, and `errorMessage`.
+3. Change only one dimension per retry (selector/path, mapping, pagination, headers, or auth).
+4. Re-run `test-fetch` immediately after each change.
+5. Stop iterating when results are stable across repeated runs.
+
+This avoids masking root causes and makes failures easier to explain in handoff.
+
+## JsonApi: Zero-Event Diagnostic Order
+
+When `validation.isSuccess = true` but `totalEventsParsed = 0` (or implausibly low), check in this order:
+
+1. `feedUrl` returns the expected JSON payload at request time.
+2. `eventArrayPath` points to repeated event items, not wrapper/config nodes.
+3. Mapping paths are relative to each event item.
+4. Required headers are present (for example, browser-like `User-Agent` when needed).
+5. Pagination/workflow settings are not limiting extraction unexpectedly.
+
+If a payload clearly contains events but extraction is empty, simplify `eventArrayPath` and mappings until one sample event parses, then build back up.
+
 ## Contributor Handoff Checklist
 
 Include:
@@ -299,3 +323,9 @@ Include:
 - final `schemaDefinition`
 - validation summary
 - any known limitations such as missing description, incomplete location, or pagination constraints
+
+For `JsonApi`, also include:
+
+- confirmed event collection path used in production schema
+- any required headers or token dependencies
+- parser or mapping limitations discovered during iteration

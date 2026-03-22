@@ -25,6 +25,8 @@ Merge behavior:
 Rules:
 
 - `detailPage.enabled` must be `true` to activate detail fetches.
+- Runtime detail enrichment must also be enabled with environment variable `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED`.
+- If the environment variable is missing, detail enrichment defaults to enabled.
 - `detailPage.linkSelector` must resolve to a detail URL from the list card scope.
 - `detailMappings` selectors run against the detail-page DOM.
 

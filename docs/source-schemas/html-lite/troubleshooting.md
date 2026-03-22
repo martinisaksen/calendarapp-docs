@@ -29,6 +29,7 @@ Common causes of false zero results:
 - `linkSelector` does not produce a detail URL
 - `startTime` cannot be parsed from list page
 - mappings are objects instead of strings
+- runtime flag `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is disabled while schema relies on detail mappings
 
 Additional causes:
 - `validation.requiredFields` includes fields not reliably mapped yet
@@ -37,6 +38,12 @@ Additional causes:
 Quality anti-pattern:
 - non-zero parse counts can still hide missing description/address/media fields
 - if important fields are present on detail pages but absent in sample events, continue schema refinement
+
+Detail enrichment appears disabled unexpectedly:
+
+1. Confirm `detailPage.enabled` is true in schemaDefinition.
+2. Confirm `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is enabled in runtime environment.
+3. Re-run test-fetch after updating environment configuration.
 
 ## validation.isSuccess = false
 

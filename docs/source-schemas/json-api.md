@@ -135,6 +135,48 @@ Use this kind of pattern when the source has an event API with token acquisition
 6. Inspect `sampleEvents` carefully for field completeness.
 7. Submit the draft with `community-submissions`.
 
+## Endpoint Discovery (Generic)
+
+When the visible events page is JS-rendered, use this repeatable approach:
+
+1. Open developer tools and record requests triggered by initial page load.
+2. Filter to JSON responses and inspect payload shape.
+3. Prefer endpoints that already return event objects over endpoints that only return markup fragments.
+4. Verify whether the endpoint needs required headers, query parameters, or token steps.
+5. Confirm that the payload can be fetched consistently outside the browser session.
+
+Do not assume the first JSON response is the correct event source. Always confirm that it contains repeated event items.
+
+## Event Path Debug Loop
+
+Use this loop when `validation.totalEventsParsed` is `0` or unexpectedly low:
+
+1. Validate raw payload first and manually count a small sample of event items.
+2. Start with the shortest plausible `eventArrayPath` to the repeated event array.
+3. Test a minimal mapping set: only `title` and `startTime` required.
+4. If parsing fails, adjust only one variable per attempt (path scope, mapping path, or headers).
+5. Re-run `test-fetch` and inspect `sampleEvents` after each change.
+6. Add optional fields (`description`, venue fields, `imageUrl`) only after core parsing is stable.
+
+## Mapping Reliability Checks
+
+Before final submission, verify:
+
+1. `requiredFields` are actually mapped and consistently present.
+2. Mappings are scoped per event item, not at root or unrelated siblings.
+3. URL fields are valid or intentionally nullable when sources omit detail links.
+4. Date and time fields are complete enough for downstream use; if split across fields, note the limitation in handoff.
+5. `sampleEvents` include detail fields when the source provides them.
+
+## Parser Compatibility Notes
+
+Json path syntax support can vary by backend implementation. If a path looks valid but still parses zero events:
+
+1. Prefer conservative path syntax and avoid advanced JSONPath features unless confirmed supported.
+2. Replace complex path expressions with stepwise, explicit segments.
+3. Validate wildcard behavior on arrays and keyed objects with targeted test-fetch runs.
+4. Record any parser-specific limitations in your handoff notes.
+
 ## Common Failure Modes
 
 - wrong `eventArrayPath`

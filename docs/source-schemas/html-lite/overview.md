@@ -18,6 +18,7 @@ This reference is shared by both tracks:
 - Selector language: limited CSS-like selectors plus `xpath=`
 - `detailPage.linkSelector` must resolve to a URL
 - `detailPage.detailMappings` run against detail-page DOM
+- Detail-page enrichment runs when both `detailPage.enabled=true` and `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is not set to disable it
 - `pagination.type` allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
 - `schemaDefinition` must be sent as a JSON string in API payloads
 
@@ -31,6 +32,8 @@ Use this deterministic order to avoid 0-event failures:
 4. Add `id` and pagination.
 5. Add `detailPage` enrichment for time/location/description/image if list fields are incomplete.
 6. Re-validate after each change.
+
+When detail mappings are configured but no enrichment is visible in parsed samples, verify the runtime flag `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is enabled in the target environment.
 
 If list-page time is unreliable, use a temporary parseable `literal:` start time to keep cards from being dropped, then overwrite with detail-page `startDate` + `startTime` mappings.
 
