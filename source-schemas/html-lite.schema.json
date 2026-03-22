@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/html-lite.schema.json",
+  "title": "CalendarApp HtmlLite schemaDefinition",
+  "description": "Contributor-facing JSON Schema for CalendarApp HtmlLite source schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventCardSelector",
+    "mappings"
+  ],
+  "properties": {
+    "eventCardSelector": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mappings": {
+      "$ref": "#/$defs/htmlMappings"
+    },
+    "detailPage": {
+      "$ref": "#/$defs/detailPageConfig"
+    },
+    "pagination": {
+      "$ref": "#/$defs/htmlPaginationConfig"
+    },
+    "validation": {
+      "$ref": "#/$defs/validationRules"
+    }
+  },
+  "$defs": {
+    "mappingValue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "htmlMappings": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "id": { "$ref": "#/$defs/mappingValue" },
+        "title": { "$ref": "#/$defs/mappingValue" },
+        "startTime": { "$ref": "#/$defs/mappingValue" },
+        "endTime": { "$ref": "#/$defs/mappingValue" },
+        "startDate": { "$ref": "#/$defs/mappingValue" },
+        "endDate": { "$ref": "#/$defs/mappingValue" },
+        "description": { "$ref": "#/$defs/mappingValue" },
+        "location": { "$ref": "#/$defs/mappingValue" },
+        "venueName": { "$ref": "#/$defs/mappingValue" },
+        "venueAddress": { "$ref": "#/$defs/mappingValue" },
+        "url": { "$ref": "#/$defs/mappingValue" },
+        "imageUrl": { "$ref": "#/$defs/mappingValue" },
+        "recurrenceRule": { "$ref": "#/$defs/mappingValue" },
+        "timeZone": { "$ref": "#/$defs/mappingValue" },
+        "timezone": { "$ref": "#/$defs/mappingValue" }
+      }
+    },
+    "detailPageConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "linkSelector": {
+          "type": "string"
+        },
+        "detailMappings": {
+          "$ref": "#/$defs/htmlMappings"
+        },
+        "occurrenceSelector": {
+          "type": "string"
+        },
+        "occurrenceMappings": {
+          "$ref": "#/$defs/htmlMappings"
+        }
+      }
+    },
+    "htmlPaginationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["NextLink", "QueryIncrement", "PathIncrement", "FixedUrls", "nextLink", "queryIncrement", "pathIncrement", "fixedUrls"]
+        },
+        "nextPageSelector": {
+          "type": "string"
+        },
+        "parameter": {
+          "type": "string"
+        },
+        "start": {
+          "type": "integer"
+        },
+        "step": {
+          "type": "integer"
+        },
+        "pathTemplate": {
+          "type": "string"
+        },
+        "urls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "maxPages": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "validationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minEventsPerFetch": {
+          "type": "integer"
+        },
+        "maxEventsPerFetch": {
+          "type": "integer"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}
