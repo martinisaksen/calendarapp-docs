@@ -39,10 +39,11 @@ Inputs:
 
 Instructions:
 1. Browse <FEED_URL> and choose the most stable source type in this order: `Ics`, `Rss`, `JsonApi`, `HtmlLite`.
-2. Explain the chosen source type in one short sentence.
-3. Build the smallest valid schema for that type, then enrich it only if needed.
-4. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (single line).
-5. Use only values that can be inferred from feed or page content. Do not invent fields not evidenced by the source.
+2. Prove the chosen source type with evidence from the page, feed, or network calls.
+3. Explain the chosen source type in one short sentence.
+4. Build the smallest valid schema for that type, then enrich it only if needed.
+5. Construct the final schemaDefinition JSON object and serialize as a compact JSON string (single line).
+6. Use only values that can be inferred from feed or page content. Do not invent fields not evidenced by the source.
 
 Schema contract (must follow exactly):
 - `schemaDefinition` must be valid JSON and will be sent as a compact JSON string.
@@ -51,20 +52,29 @@ Schema contract (must follow exactly):
 - For `JsonApi`, include `eventArrayPath` and `mappings`; use `schemaVersion` 1 or 2 when needed.
 - For `JsonApi`, advanced features require `schemaVersion = 2`.
 - For `JsonApi`, do not configure both `requestWorkflow` and `pagination`.
+- If a usable event JSON endpoint exists, choose `JsonApi`, not `HtmlLite`.
 - For `HtmlLite`, mappings values must be strings, not objects.
+- For `HtmlLite`, do not use comma-separated selector lists. Rewrite them as `xpath=` if needed.
 - For `HtmlLite`, prefer simple CSS-like selectors for tag/class/id and descendant-by-space patterns such as `h2 a`.
 - For `HtmlLite`, use `xpath=` when you need unsupported CSS features like `>`, comma-separated selector lists, sibling logic, or positional filters.
 - For `HtmlLite`, attribute extraction uses `selector@attribute` or `selector::attr(attribute)`.
 - For `HtmlLite`, if detail page extraction is used, use detailPage.linkSelector and detailPage.detailMappings with string selectors only.
 - For `HtmlLite`, allowed pagination.type values are `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`.
+- Do not include unsupported fields such as `sourceName`, `baseUrl`, or `transforms` inside `schemaDefinition`.
+- Do not use placeholder `literal:` time values in final handoff output unless no real time can be extracted from list or detail pages.
 
 Output exactly three things and nothing else:
 
 ### 1. Chosen source type
 Print only one of: `Ics`, `Rss`, `JsonApi`, `HtmlLite`.
 
-### 2. schemaDefinition JSON (pretty-printed for review)
-Print only valid JSON for schemaDefinition.
+### 2. Evidence and schemaDefinition JSON (pretty-printed for review)
+Start with a short evidence block containing:
+- chosen type reason
+- discovered endpoint or repeated card selector
+- for HtmlLite: one quoted example title, one time sample, and one link sample from the initial HTML
+
+Then print only valid JSON for schemaDefinition.
 
 ### 3. Ready-to-run PowerShell test and submission commands
 Produce a complete PowerShell script targeting
@@ -89,11 +99,14 @@ After the Invoke-RestMethod call, the script must also print the validation resu
 
 Before finalizing output, self-check:
 - schema matches the chosen source type
+- a higher-priority source type was not incorrectly skipped
 - all required fields for that source type are present
 - HtmlLite selectors avoid unsupported CSS operators unless rewritten with `xpath=`
+- HtmlLite selectors do not use commas
 - requiredFields align with mapped fields
 - linkSelector returns a URL when detailPage is used
 - pagination.type is valid when used
+- schemaDefinition does not contain unsupported wrapper fields
 - schemaDefinition compact string is single-line
 ```
 

@@ -2,6 +2,8 @@
 
 Use `JsonApi` when event data comes from a JSON endpoint instead of ICS, RSS, or static HTML.
 
+If a usable event JSON endpoint exists, `JsonApi` is the correct type even when the page visually renders event cards.
+
 ## When To Use It
 
 Use `JsonApi` when:
@@ -65,6 +67,64 @@ The templates endpoint includes starter patterns for:
 
 Use the closest template first, then trim it down if the source is simpler.
 
+## Worked Example: Landing Page To Advanced JsonApi Schema
+
+Some event pages look like normal listing pages in the browser but are actually driven by JSON API calls. When that happens, do not fall back to HtmlLite just because visible cards exist.
+
+Typical discovery flow:
+
+1. Start from the public events page.
+2. Inspect network calls or page scripts.
+3. Identify the JSON endpoint that returns real event objects.
+4. Decide whether auth headers, dynamic token acquisition, query templates, or windowed pagination are required.
+5. Use `schemaVersion = 2` when those advanced features are needed.
+
+Example advanced shape:
+
+```json
+{
+  "schemaVersion": 2,
+  "eventArrayPath": "$.docs.docs[*]",
+  "mappings": {
+    "id": "$.recid",
+    "url": "$.eventUrl",
+    "title": "$.title",
+    "startTime": "$.startDate",
+    "endTime": "$.endDate",
+    "location": "$.location",
+    "venueName": "$.listing.title",
+    "venueAddress": "$.address1",
+    "description": "$.description"
+  },
+  "queryTemplates": {
+    "urlTemplate": "https://example.org/api/events?start={{windowStartUtc}}&limit={{pageSize}}&skip={{offset}}&token={{authToken}}"
+  },
+  "tokenConfig": {
+    "acquisitionStrategy": "Dynamic",
+    "dynamicAcquisition": {
+      "endpoint": "https://example.org/api/token",
+      "method": "Get",
+      "extractPath": "$.token",
+      "bindingKey": "authToken"
+    }
+  },
+  "pagination": {
+    "strategy": "Offset",
+    "offsetParamName": "skip",
+    "pageSizeParamName": "limit",
+    "defaultPageSize": 12,
+    "maxRequestsPerRun": 48
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime", "url"],
+    "minEventsPerFetch": 1
+  },
+  "validationProfile": "Advanced"
+}
+```
+
+Use this kind of pattern when the source has an event API with token acquisition, query templates, or transformed response fields. Do not try to recreate the same source with HtmlLite selectors.
+
 ## Recommended Contributor Workflow
 
 1. Find the JSON endpoint that returns real event objects.
@@ -82,5 +142,6 @@ Use the closest template first, then trim it down if the source is simpler.
 - unnecessary advanced features when a simpler schema would work
 - pagination configured together with requestWorkflow
 - auth headers or tokens copied into the wrong part of the schema
+- choosing HtmlLite even though a usable JSON endpoint exists
 
 See also: [Submission API And Validation](submission-api-and-validation.md)

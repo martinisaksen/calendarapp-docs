@@ -45,6 +45,11 @@
 
 Start small and validate each step.
 
+Important:
+- `literal:` time values are bootstrap aids, not final handoff values
+- replace or override them with real extracted times before final contributor handoff whenever possible
+- do not add fields that are not part of the HtmlLite contract
+
 Step 1:
 
 ```json
@@ -62,6 +67,101 @@ Step 1:
 ```
 
 Step 2: add `id`, pagination, and detail-page mappings after Step 1 returns non-zero events.
+
+## Common Invalid Shapes
+
+### Do not add unsupported top-level fields
+
+Invalid:
+
+```json
+{
+  "sourceName": "Example Events",
+  "baseUrl": "https://example.org",
+  "eventCardSelector": "div.event-card",
+  "mappings": {
+    "title": "h3",
+    "startTime": ".date"
+  }
+}
+```
+
+Why invalid:
+- `sourceName` and `baseUrl` are not part of `schemaDefinition`
+
+### Do not add `transforms`
+
+Invalid:
+
+```json
+{
+  "eventCardSelector": "div.event-card",
+  "mappings": {
+    "url": "a@href"
+  },
+  "transforms": [
+    {
+      "field": "url",
+      "type": "absoluteUrl"
+    }
+  ]
+}
+```
+
+Why invalid:
+- `transforms` is not part of the HtmlLite schema
+
+### Use `venueAddress`, not `address`
+
+Invalid:
+
+```json
+{
+  "detailPage": {
+    "enabled": true,
+    "detailMappings": {
+      "address": ".event-address"
+    }
+  }
+}
+```
+
+Valid:
+
+```json
+{
+  "detailPage": {
+    "enabled": true,
+    "detailMappings": {
+      "venueAddress": ".event-address"
+    }
+  }
+}
+```
+
+## Split Date And Time Is Usually Better Than Guessing
+
+If a page shows date and time separately, prefer `startDate` plus `startTime` over guessing one combined selector.
+
+Example:
+
+```json
+{
+  "eventCardSelector": "article.event",
+  "mappings": {
+    "id": "h2 a@href",
+    "title": "h2 a",
+    "startDate": ".event__date",
+    "startTime": ".event__time",
+    "url": "h2 a@href"
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+Do not map `startTime` to a date-only node and `endTime` to a time-only node unless you have proven that structure is valid for the page.
 
 ## Full Example
 

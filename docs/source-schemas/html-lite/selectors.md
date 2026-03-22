@@ -78,3 +78,34 @@ Avoid unsupported CSS syntax in HtmlLite:
 - adjacent and general sibling operators
 
 If you need any of those, switch that selector to `xpath=` instead of trying to force full CSS syntax.
+
+## Invalid vs Valid Examples
+
+Chat models often try to hedge with multiple fallback selectors in a single string. That does not work in HtmlLite.
+
+Invalid:
+
+```json
+{
+  "eventCardSelector": ".event-listing, .events-listing-item, .event-item",
+  "mappings": {
+    "title": ".event-title, h3, h2"
+  }
+}
+```
+
+Why invalid:
+- selector lists separated by commas are unsupported
+
+Valid:
+
+```json
+{
+  "eventCardSelector": "xpath=.//*[contains(@class,'event-listing') or contains(@class,'events-listing-item') or contains(@class,'event-item')]",
+  "mappings": {
+    "title": "xpath=.//*[contains(@class,'event-title') or self::h3 or self::h2][1]"
+  }
+}
+```
+
+Also avoid invented selectors that are not proven by the page source. A weaker but evidenced selector is better than a broader guessed one.

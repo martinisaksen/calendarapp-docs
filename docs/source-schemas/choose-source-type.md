@@ -16,6 +16,15 @@ Choose the most structured source that exposes the event data you need. In gener
 
 Structured feeds are easier to validate, less brittle to maintain, and less likely to break when a website redesigns its HTML.
 
+## Hard Rules
+
+Use these rules before you commit to a source type:
+
+1. If a real event JSON endpoint exists, choose `JsonApi`, not `HtmlLite`.
+2. If a real ICS feed exists, choose `Ics`, not `Rss`, `JsonApi`, or `HtmlLite`.
+3. Use `HtmlLite` only when the initial HTML response already contains repeated event cards and no better structured feed exists.
+4. Do not choose a type based only on what the page looks like in the browser. Choose it based on the best underlying source that can be validated.
+
 ## Decision Table
 
 | Type | Use It When | Do Not Use It When | Required `schemaDefinition` Shape |
@@ -73,6 +82,11 @@ Use HtmlLite only when:
 - titles, URLs, and date/time can be selected from DOM nodes
 - you do not need JavaScript execution to reveal the event list
 
+Do not use HtmlLite when:
+- the page is only a rendered shell over a JSON endpoint
+- the most reliable event data comes from XHR or fetch responses
+- the page shows cards visually, but the initial HTML does not contain repeatable event nodes
+
 Typical example:
 
 ```text
@@ -86,6 +100,17 @@ https://example.org/events
 3. Validate with `POST /api/source-schemas/test-fetch`.
 4. Submit with `POST /api/source-schemas/community-submissions`.
 5. Re-test and re-submit until the validation result is stable.
+
+## Proof Before You Pick HtmlLite
+
+Before you choose `HtmlLite`, you should be able to cite all of these from the initial HTML response:
+
+1. one repeated event card container
+2. one title sample from that container
+3. one date or time sample from that container
+4. one stable URL or detail link from that container
+
+If you cannot prove those four things, keep looking for a structured source.
 
 ## Where To Go Next
 

@@ -39,6 +39,14 @@ Important:
 - `schemaDefinition` must be sent as a JSON string, not a nested object
 - `schemaDefinition` can be up to 200000 characters
 
+`schemaDefinition` must contain only fields supported by the selected source type. Do not include wrapper or note fields such as:
+
+- `sourceName`
+- `baseUrl`
+- `transforms`
+
+Those do not belong in the submitted schema body.
+
 ## Contributor-Safe Workflow
 
 ### 1. Load A Starter Template
@@ -154,6 +162,105 @@ The backend enforces these common rules for every source type:
   },
   "validation": {
     "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+## Common Invalid Patterns
+
+These mistakes are common when generating schemas with chat models.
+
+### Invalid: unsupported HtmlLite selector lists
+
+```json
+{
+  "eventCardSelector": ".event-card, .featured-event",
+  "mappings": {
+    "title": ".event-title, h3, h2"
+  }
+}
+```
+
+Why invalid:
+- HtmlLite does not support comma-separated selector lists.
+
+Valid rewrite:
+
+```json
+{
+  "eventCardSelector": "xpath=.//*[contains(@class,'event-card') or contains(@class,'featured-event')]",
+  "mappings": {
+    "title": "xpath=.//*[contains(@class,'event-title') or self::h3 or self::h2][1]"
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+### Invalid: unsupported HtmlLite pagination shape
+
+```json
+{
+  "pagination": {
+    "enabled": true,
+    "nextPageSelector": "a.next"
+  }
+}
+```
+
+Valid rewrite:
+
+```json
+{
+  "pagination": {
+    "type": "nextLink",
+    "nextPageSelector": "a.next@href",
+    "maxPages": 5
+  }
+}
+```
+
+### Invalid: unrecognized HtmlLite fields
+
+```json
+{
+  "baseUrl": "https://example.org",
+  "transforms": [
+    {
+      "field": "url",
+      "type": "absoluteUrl"
+    }
+  ]
+}
+```
+
+Why invalid:
+- `baseUrl` and `transforms` are not part of the HtmlLite contract.
+- `url` and `imageUrl` are already resolved to absolute URLs downstream when valid relative links are captured.
+
+### Invalid: wrong field name
+
+```json
+{
+  "detailPage": {
+    "enabled": true,
+    "detailMappings": {
+      "address": ".event-address"
+    }
+  }
+}
+```
+
+Valid rewrite:
+
+```json
+{
+  "detailPage": {
+    "enabled": true,
+    "detailMappings": {
+      "venueAddress": ".event-address"
+    }
   }
 }
 ```
