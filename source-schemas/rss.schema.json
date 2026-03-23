@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/rss.schema.json",
+  "title": "CalendarApp Rss schemaDefinition",
+  "description": "Contributor-facing JSON Schema for CalendarApp Rss source schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "extractionRules"
+  ],
+  "properties": {
+    "extractionRules": {
+      "$ref": "#/$defs/rssExtractionRules"
+    },
+    "validation": {
+      "$ref": "#/$defs/validationRules"
+    }
+  },
+  "$defs": {
+    "rssExtractionRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "id": { "type": "string" },
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "pubDate": { "type": "string" },
+        "location": { "type": "string" },
+        "url": { "type": "string" },
+        "link": { "type": "string" },
+        "timeZone": { "type": "string" },
+        "timezone": { "type": "string" }
+      }
+    },
+    "validationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minEventsPerFetch": {
+          "type": "integer"
+        },
+        "maxEventsPerFetch": {
+          "type": "integer"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

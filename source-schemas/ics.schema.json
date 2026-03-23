@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/ics.schema.json",
+  "title": "CalendarApp Ics schemaDefinition",
+  "description": "Contributor-facing JSON Schema for CalendarApp Ics source schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "validation": {
+      "$ref": "#/$defs/validationRules"
+    }
+  },
+  "$defs": {
+    "validationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minEventsPerFetch": {
+          "type": "integer"
+        },
+        "maxEventsPerFetch": {
+          "type": "integer"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

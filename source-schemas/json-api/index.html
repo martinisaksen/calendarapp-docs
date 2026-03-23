@@ -1,0 +1,2388 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Public documentation for CalendarApp source contribution workflows for humans and AI agents.">
+      
+      
+      
+        <link rel="canonical" href="https://martinisaksen.github.io/calendarapp-docs/source-schemas/json-api/">
+      
+      
+        <link rel="prev" href="../rss.schema.json">
+      
+      
+        <link rel="next" href="../json-api-v2-json-schema/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Overview - CalendarApp Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#jsonapi-source-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CalendarApp Docs" class="md-header__button md-logo" aria-label="CalendarApp Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CalendarApp Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/calendarapp/calendarapp-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    calendarapp/calendarapp-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CalendarApp Docs" class="md-nav__button md-logo" aria-label="CalendarApp Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    CalendarApp Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/calendarapp/calendarapp-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    calendarapp/calendarapp-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start Here
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Start Here
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../choose-source-type/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose A Source Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../submission-api-and-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Submission API And Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Source Schema JSON Schema Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../choose-source-type/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose A Source Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ai/source-onboarding/runbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Workflow (Autonomous Agent)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Human Source Contribution
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Human Source Contribution
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Workflow
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shared Workflow
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../choose-source-type/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose A Source Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../submission-api-and-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Submission API And Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Source Schema JSON Schema Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/validation-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation Checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ics Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ics Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ics.schema.json" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ics JSON Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rss Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rss Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rss.schema.json" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rss JSON Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JsonApi Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JsonApi Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When To Use It
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimum-schemadefinition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum schemaDefinition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-version-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Version Guidance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements-and-validation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements And Validation Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starter-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starter Patterns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-landing-page-to-advanced-jsonapi-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Example: Landing Page To Advanced JsonApi Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split-datetime-and-source-timezone-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Split Date/Time And Source Timezone Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-contributor-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Contributor Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-geolocation-mapping-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Geolocation Mapping Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoint-discovery-generic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoint Discovery (Generic)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-path-debug-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Path Debug Loop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapping-reliability-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping Reliability Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parser-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parser Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Failure Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-api-v2-json-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JsonApi V2 JSON Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HtmlLite Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HtmlLite Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite.schema.json" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HtmlLite JSON Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/api-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/schema-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/event-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/time-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/pagination/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pagination
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/detail-pages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detail Pages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/validation-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation Checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Autonomous Onboarding
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Autonomous Onboarding
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ai/source-onboarding/runbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Workflow (Autonomous Agent)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ai/source-onboarding/prompt-template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ChatGPT Prompt (No HTTP Tools)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../choose-source-type/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose A Source Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../submission-api-and-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Submission API And Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-lite/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When To Use It
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimum-schemadefinition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum schemaDefinition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-version-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Version Guidance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements-and-validation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements And Validation Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starter-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starter Patterns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-landing-page-to-advanced-jsonapi-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Example: Landing Page To Advanced JsonApi Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split-datetime-and-source-timezone-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Split Date/Time And Source Timezone Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-contributor-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Contributor Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-geolocation-mapping-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Geolocation Mapping Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoint-discovery-generic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoint Discovery (Generic)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-path-debug-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Path Debug Loop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapping-reliability-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping Reliability Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parser-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parser Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Failure Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="jsonapi-source-guide">JsonApi Source Guide<a class="headerlink" href="#jsonapi-source-guide" title="Permanent link">&para;</a></h1>
+<p>Use <code>JsonApi</code> when event data comes from a JSON endpoint instead of ICS, RSS, or static HTML.</p>
+<p>If a usable event JSON endpoint exists, <code>JsonApi</code> is the correct type even when the page visually renders event cards.</p>
+<p>For new JsonApi sources, default to <code>schemaVersion = 2</code>.</p>
+<h2 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
+<p>Use <code>JsonApi</code> when:</p>
+<ul>
+<li>the page or widget fetches JSON responses containing events</li>
+<li>events live in arrays or nested data structures</li>
+<li>pagination, headers, tokens, or request workflows are required to reach the event payload</li>
+</ul>
+<p>Do not use <code>JsonApi</code> when an equivalent ICS or RSS feed already provides the same data more simply.</p>
+<h2 id="minimum-schemadefinition">Minimum <code>schemaDefinition</code><a class="headerlink" href="#minimum-schemadefinition" title="Permanent link">&para;</a></h2>
+<p><code>JsonApi</code> requires <code>eventArrayPath</code> and <code>mappings</code>.</p>
+<pre><code class="language-json">{
+  &quot;eventArrayPath&quot;: &quot;$.events[*]&quot;,
+  &quot;mappings&quot;: {
+    &quot;id&quot;: &quot;$.id&quot;,
+    &quot;title&quot;: &quot;$.title&quot;,
+    &quot;startTime&quot;: &quot;$.start&quot;,
+    &quot;endTime&quot;: &quot;$.end&quot;,
+    &quot;location&quot;: &quot;$.location&quot;,
+    &quot;url&quot;: &quot;$.url&quot;
+  },
+  &quot;validation&quot;: {
+    &quot;requiredFields&quot;: [&quot;title&quot;, &quot;startTime&quot;]
+  }
+}
+</code></pre>
+<p>For new sources, prefer this minimal v2 shape instead of omitting <code>schemaVersion</code>:</p>
+<pre><code class="language-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;eventArrayPath&quot;: &quot;$.events[*]&quot;,
+  &quot;mappings&quot;: {
+    &quot;title&quot;: &quot;$.title&quot;,
+    &quot;startTime&quot;: &quot;$.start&quot;
+  },
+  &quot;validation&quot;: {
+    &quot;requiredFields&quot;: [&quot;title&quot;, &quot;startTime&quot;]
+  }
+}
+</code></pre>
+<h2 id="optional-features">Optional Features<a class="headerlink" href="#optional-features" title="Permanent link">&para;</a></h2>
+<p>Add these only when needed:</p>
+<ul>
+<li><code>eventArrayPaths</code> for alternate payload shapes</li>
+<li><code>pagination</code> for offset, cursor, or page-based APIs</li>
+<li><code>authentication</code> for API key, bearer, or basic auth flows</li>
+<li><code>requestHeaders</code> for required headers such as <code>User-Agent</code></li>
+<li><code>requestWorkflow</code> for multi-step request chains</li>
+<li><code>schemaVersion = 2</code> for advanced features such as tokens, query templates, response transforms, or windowed pagination</li>
+</ul>
+<h2 id="default-version-guidance">Default Version Guidance<a class="headerlink" href="#default-version-guidance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>New JsonApi sources should start at <code>schemaVersion = 2</code>.</li>
+<li>Keep <code>schemaVersion = 1</code> only for legacy schemas that are already working and do not need v2-only features.</li>
+<li>If the source needs <code>responseTransforms</code>, <code>flattenPath</code>, token acquisition, query templates, or windowed pagination, <code>schemaVersion = 2</code> is required.</li>
+</ul>
+<p>Use the contributor-facing <a href="../json-api-v2-json-schema/">JsonApi V2 JSON Schema</a> when you want a machine-readable contract for authoring or AI validation.</p>
+<h2 id="requirements-and-validation-notes">Requirements And Validation Notes<a class="headerlink" href="#requirements-and-validation-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>eventArrayPath</code> is required</li>
+<li><code>mappings</code> is required and should be non-empty</li>
+<li><code>schemaVersion</code> must be <code>1</code> or <code>2</code> when provided</li>
+<li>advanced features require <code>schemaVersion = 2</code></li>
+<li><code>requestWorkflow</code> and <code>pagination</code> cannot both be configured</li>
+<li><code>pagination.maxRequestsPerRun</code> must be greater than <code>0</code> when provided</li>
+<li>dynamic token acquisition requires <code>tokenConfig.dynamicAcquisition.endpoint</code></li>
+</ul>
+<h2 id="starter-patterns">Starter Patterns<a class="headerlink" href="#starter-patterns" title="Permanent link">&para;</a></h2>
+<p>The templates endpoint includes starter patterns for:</p>
+<ul>
+<li>flat event lists</li>
+<li>offset pagination</li>
+<li>bearer-authenticated APIs</li>
+<li>Bibliocommons-style keyed collections</li>
+</ul>
+<p>Use the closest template first, then trim it down if the source is simpler.</p>
+<h2 id="worked-example-landing-page-to-advanced-jsonapi-schema">Worked Example: Landing Page To Advanced JsonApi Schema<a class="headerlink" href="#worked-example-landing-page-to-advanced-jsonapi-schema" title="Permanent link">&para;</a></h2>
+<p>Some event pages look like normal listing pages in the browser but are actually driven by JSON API calls. When that happens, do not fall back to HtmlLite just because visible cards exist.</p>
+<p>Typical discovery flow:</p>
+<ol>
+<li>Start from the public events page.</li>
+<li>Inspect network calls or page scripts.</li>
+<li>Identify the JSON endpoint that returns real event objects.</li>
+<li>Decide whether auth headers, dynamic token acquisition, query templates, or windowed pagination are required.</li>
+<li>Use <code>schemaVersion = 2</code> when those advanced features are needed.</li>
+</ol>
+<p>Example advanced shape:</p>
+<pre><code class="language-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;eventArrayPath&quot;: &quot;$.docs.docs[*]&quot;,
+  &quot;mappings&quot;: {
+    &quot;id&quot;: &quot;$.recid&quot;,
+    &quot;url&quot;: &quot;$.eventUrl&quot;,
+    &quot;title&quot;: &quot;$.title&quot;,
+    &quot;startTime&quot;: &quot;$.startDate&quot;,
+    &quot;endTime&quot;: &quot;$.endDate&quot;,
+    &quot;location&quot;: &quot;$.location&quot;,
+    &quot;venueName&quot;: &quot;$.listing.title&quot;,
+    &quot;venueAddress&quot;: &quot;$.address1&quot;,
+    &quot;description&quot;: &quot;$.description&quot;
+  },
+  &quot;queryTemplates&quot;: {
+    &quot;urlTemplate&quot;: &quot;https://example.org/api/events?start={{windowStartUtc}}&amp;limit={{pageSize}}&amp;skip={{offset}}&amp;token={{authToken}}&quot;
+  },
+  &quot;tokenConfig&quot;: {
+    &quot;acquisitionStrategy&quot;: &quot;Dynamic&quot;,
+    &quot;dynamicAcquisition&quot;: {
+      &quot;endpoint&quot;: &quot;https://example.org/api/token&quot;,
+      &quot;method&quot;: &quot;Get&quot;,
+      &quot;extractPath&quot;: &quot;$.token&quot;,
+      &quot;bindingKey&quot;: &quot;authToken&quot;
+    }
+  },
+  &quot;pagination&quot;: {
+    &quot;strategy&quot;: &quot;Offset&quot;,
+    &quot;offsetParamName&quot;: &quot;skip&quot;,
+    &quot;pageSizeParamName&quot;: &quot;limit&quot;,
+    &quot;defaultPageSize&quot;: 12,
+    &quot;maxRequestsPerRun&quot;: 48
+  },
+  &quot;validation&quot;: {
+    &quot;requiredFields&quot;: [&quot;title&quot;, &quot;startTime&quot;, &quot;url&quot;],
+    &quot;minEventsPerFetch&quot;: 1
+  },
+  &quot;validationProfile&quot;: &quot;Advanced&quot;
+}
+</code></pre>
+<p>Use this kind of pattern when the source has an event API with token acquisition, query templates, or transformed response fields. Do not try to recreate the same source with HtmlLite selectors.</p>
+<h2 id="split-datetime-and-source-timezone-pattern">Split Date/Time And Source Timezone Pattern<a class="headerlink" href="#split-datetime-and-source-timezone-pattern" title="Permanent link">&para;</a></h2>
+<p>Use this pattern when the payload stores date and time in separate fields and also exposes timezone in the source data.</p>
+<pre><code class="language-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;eventArrayPath&quot;: &quot;$.data.widgets[*].data.settings.events[*]&quot;,
+  &quot;mappings&quot;: {
+    &quot;id&quot;: &quot;$.id&quot;,
+    &quot;title&quot;: &quot;$.name&quot;,
+    &quot;startTime&quot;: &quot;$.startTime&quot;,
+    &quot;endTime&quot;: &quot;$.endTime&quot;,
+    &quot;timeZone&quot;: &quot;$.timeZone&quot;,
+    &quot;url&quot;: &quot;$.buttonLink.value&quot;
+  },
+  &quot;responseTransforms&quot;: {
+    &quot;flattenPath&quot;: &quot;$.data.widgets[*].data.settings.events[*]&quot;,
+    &quot;fields&quot;: {
+      &quot;startTime&quot;: {
+        &quot;type&quot;: &quot;Composite&quot;,
+        &quot;template&quot;: &quot;{{startDate}} {{startClock}}&quot;,
+        &quot;inputs&quot;: {
+          &quot;startDate&quot;: &quot;$.start.date&quot;,
+          &quot;startClock&quot;: &quot;$.start.time&quot;
+        }
+      },
+      &quot;endTime&quot;: {
+        &quot;type&quot;: &quot;Composite&quot;,
+        &quot;template&quot;: &quot;{{endDate}} {{endClock}}&quot;,
+        &quot;inputs&quot;: {
+          &quot;endDate&quot;: &quot;$.end.date&quot;,
+          &quot;endClock&quot;: &quot;$.end.time&quot;
+        }
+      }
+    }
+  },
+  &quot;validation&quot;: {
+    &quot;requiredFields&quot;: [&quot;title&quot;, &quot;startTime&quot;]
+  }
+}
+</code></pre>
+<p>Guidance:</p>
+<ul>
+<li>If the source provides timezone, map <code>timeZone</code> from the source instead of relying on runtime or server-local timezone assumptions.</li>
+<li>When response transforms reshape or reframe the effective event payload, set <code>responseTransforms.flattenPath</code> explicitly.</li>
+<li>If the source already provides explicit timezone offsets in <code>startTime</code> or <code>endTime</code>, preserve them.</li>
+</ul>
+<h2 id="recommended-contributor-workflow">Recommended Contributor Workflow<a class="headerlink" href="#recommended-contributor-workflow" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Find the JSON endpoint that returns real event objects.</li>
+<li>Start from the closest template or the minimal shape above.</li>
+<li>Map <code>title</code> and <code>startTime</code> first, then add URL, ID, and location.</li>
+<li>Add pagination or auth only when the source actually requires it.</li>
+<li>Run <code>test-fetch</code>.</li>
+<li>Inspect <code>sampleEvents</code> carefully for field completeness.</li>
+<li>Submit the draft with <code>community-submissions</code>.</li>
+</ol>
+<h2 id="optional-geolocation-mapping-pattern">Optional Geolocation Mapping Pattern<a class="headerlink" href="#optional-geolocation-mapping-pattern" title="Permanent link">&para;</a></h2>
+<p>When the JSON source includes explicit coordinates, map them as source geolocation evidence and validate ranges before handoff.</p>
+<p>Example source patterns you may encounter:</p>
+<ul>
+<li>flat fields: <code>latitude</code> and <code>longitude</code></li>
+<li>abbreviated fields: <code>lat</code> and <code>lng</code>, <code>lat</code> and <code>lon</code></li>
+<li>nested fields: <code>geo.lat</code> and <code>geo.lng</code>, <code>location.latitude</code> and <code>location.longitude</code></li>
+<li>GeoJSON-like arrays: <code>geometry.coordinates</code></li>
+</ul>
+<p>Contributor guidance:</p>
+<ul>
+<li>Prefer direct source coordinates when valid.</li>
+<li>Keep <code>location</code> and <code>venueAddress</code> mappings even when coordinates exist, so fallback remains viable if some records omit coordinates.</li>
+<li>If coordinate fields are inconsistent across records, treat out-of-range or non-numeric values as invalid and rely on fallback geocoding for those records.</li>
+<li>Validate sample events for mixed data quality, not only one happy-path record.</li>
+</ul>
+<h2 id="endpoint-discovery-generic">Endpoint Discovery (Generic)<a class="headerlink" href="#endpoint-discovery-generic" title="Permanent link">&para;</a></h2>
+<p>When the visible events page is JS-rendered, use this repeatable approach:</p>
+<ol>
+<li>Open developer tools and record requests triggered by initial page load.</li>
+<li>Filter to JSON responses and inspect payload shape.</li>
+<li>Prefer endpoints that already return event objects over endpoints that only return markup fragments.</li>
+<li>Verify whether the endpoint needs required headers, query parameters, or token steps.</li>
+<li>Confirm that the payload can be fetched consistently outside the browser session.</li>
+</ol>
+<p>Do not assume the first JSON response is the correct event source. Always confirm that it contains repeated event items.</p>
+<h2 id="event-path-debug-loop">Event Path Debug Loop<a class="headerlink" href="#event-path-debug-loop" title="Permanent link">&para;</a></h2>
+<p>Use this loop when <code>validation.totalEventsParsed</code> is <code>0</code> or unexpectedly low:</p>
+<ol>
+<li>Validate raw payload first and manually count a small sample of event items.</li>
+<li>Start with the shortest plausible <code>eventArrayPath</code> to the repeated event array.</li>
+<li>Test a minimal mapping set: only <code>title</code> and <code>startTime</code> required.</li>
+<li>If <code>responseTransforms</code> are used, verify that transformed <code>startTime</code> and <code>endTime</code> values are actually populated and parseable.</li>
+<li>If parsing fails, adjust only one variable per attempt (path scope, mapping path, transform shape, or headers).</li>
+<li>Re-run <code>test-fetch</code> and inspect <code>sampleEvents</code> after each change.</li>
+<li>Add optional fields (<code>description</code>, venue fields, <code>imageUrl</code>) only after core parsing is stable.</li>
+</ol>
+<h2 id="mapping-reliability-checks">Mapping Reliability Checks<a class="headerlink" href="#mapping-reliability-checks" title="Permanent link">&para;</a></h2>
+<p>Before final submission, verify:</p>
+<ol>
+<li><code>requiredFields</code> are actually mapped and consistently present.</li>
+<li>Mappings are scoped per event item, not at root or unrelated siblings.</li>
+<li>URL fields are valid or intentionally nullable when sources omit detail links.</li>
+<li>Date and time fields are complete enough for downstream use; if split across fields, use <code>responseTransforms</code> to produce parser-ready datetime values.</li>
+<li>If the source provides timezone, map <code>timeZone</code> and verify sample events reflect the intended source timezone.</li>
+<li><code>sampleEvents</code> include detail fields when the source provides them.</li>
+</ol>
+<h2 id="parser-compatibility-notes">Parser Compatibility Notes<a class="headerlink" href="#parser-compatibility-notes" title="Permanent link">&para;</a></h2>
+<p>Json path syntax support can vary by backend implementation. If a path looks valid but still parses zero events:</p>
+<ol>
+<li>Prefer conservative path syntax and avoid advanced JSONPath features unless confirmed supported.</li>
+<li>Replace complex path expressions with stepwise, explicit segments.</li>
+<li>Validate wildcard behavior on arrays and keyed objects with targeted test-fetch runs.</li>
+<li>Record any parser-specific limitations in your handoff notes.</li>
+</ol>
+<h2 id="common-failure-modes">Common Failure Modes<a class="headerlink" href="#common-failure-modes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>wrong <code>eventArrayPath</code></li>
+<li>missing or incorrect <code>responseTransforms.flattenPath</code> when transforms reshape the effective event payload</li>
+<li>transformed <code>startTime</code> or <code>endTime</code> values that remain empty or unparsable after composition</li>
+<li>mappings that point to a scalar outside the current event item</li>
+<li>unnecessary advanced features when a simpler schema would work</li>
+<li>pagination configured together with requestWorkflow</li>
+<li>auth headers or tokens copied into the wrong part of the schema</li>
+<li>choosing HtmlLite even though a usable JSON endpoint exists</li>
+</ul>
+<p>See also: <a href="../submission-api-and-validation/">Submission API And Validation</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
