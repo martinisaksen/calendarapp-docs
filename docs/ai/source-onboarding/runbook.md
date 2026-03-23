@@ -93,6 +93,15 @@ JsonApi bootstrap guardrails:
 6. If zero events parse, adjust one variable at a time (path, mapping scope, transform shape, headers, pagination).
 7. Capture parser-compatibility notes when a path syntax assumption fails.
 
+Geolocation decision loop:
+
+1. Detect coordinate candidates in source payload fields using common key variants: `latitude`, `lat`, `longitude`, `lng`, `lon`, `coordinates`, `geo`, `geometry`.
+2. Validate coordinate values: latitude numeric and between `-90` and `90`, longitude numeric and between `-180` and `180`.
+3. If valid source coordinates exist, preserve them and treat geocoding as not required for those records.
+4. If coordinates are missing or invalid, require high-quality `location` and `venueAddress` mappings so geocoding fallback has useful input.
+5. Confirm test-fetch sample events contain either valid source coordinates or strong text location evidence for fallback geocoding.
+6. Never generate synthetic coordinates from guesses.
+
 HtmlLite bootstrap rules remain below.
 
 Before finalizing mappings, define a field-completeness target against 3 to 5 known detail URLs:
@@ -213,6 +222,7 @@ If validation succeeds, produce handoff payload containing:
 - `validation.totalEventsParsed`
 - `validation.sampleEvents` summary
 - `validation.isSuccess`
+- geolocation note: `source-coordinates-used` or `geocode-fallback-expected`
 
 ## Final Report Examples
 

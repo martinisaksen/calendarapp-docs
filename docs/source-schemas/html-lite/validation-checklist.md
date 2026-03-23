@@ -21,6 +21,20 @@ Recommended additional checks:
 - detailPage.linkSelector resolves within the card scope
 - runtime flag `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is enabled when detail mappings are expected to populate fields
 
+## Geolocation Quality Gate
+
+Before handoff, verify one of these is true:
+
+1. Source provides valid coordinates and sampled values are in valid latitude/longitude ranges.
+2. Source does not reliably provide valid coordinates, but mapped `location` and `venueAddress` values are complete enough for geocoding fallback.
+
+Checklist:
+
+- no synthetic coordinates introduced by contributor or AI
+- coordinate order verified when arrays are used
+- `location` and `venueAddress` quality checked on at least 3 sample events when fallback is expected
+- geolocation behavior noted in handoff summary as `source-coordinates-used` or `geocode-fallback-expected`
+
 ## Submission Checklist
 
 - compatibility check completed

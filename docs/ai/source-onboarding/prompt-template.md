@@ -58,6 +58,13 @@ Schema contract (must follow exactly):
 - For `JsonApi`, if date and time are split across fields, use `responseTransforms` to compose parser-ready `startTime` and `endTime` values.
 - For `JsonApi`, if the source provides timezone, map `timeZone` from the source.
 - For `JsonApi`, when transforms reshape the effective event payload, set `responseTransforms.flattenPath` explicitly.
+- Geolocation guardrails:
+- Detect likely coordinate keys in payloads, including latitude/longitude variants and geometry or coordinates objects.
+- Accept source coordinates only when latitude is in `-90..90` and longitude is in `-180..180`.
+- If valid source coordinates exist, preserve them and do not rely on geocoding for those records.
+- If source coordinates are missing or invalid, improve `location` and `venueAddress` mapping for geocoding fallback.
+- Do not invent coordinates or reverse coordinate order.
+- If array coordinates are used, verify whether order is longitude, latitude before mapping.
 - If a usable event JSON endpoint exists, choose `JsonApi`, not `HtmlLite`.
 - For `HtmlLite`, mappings values must be strings, not objects.
 - For `HtmlLite`, do not use comma-separated selector lists. Rewrite them as `xpath=` if needed.
@@ -119,6 +126,7 @@ Before finalizing output, self-check:
 - pagination.type is valid when used
 - schemaDefinition does not contain unsupported wrapper fields
 - schemaDefinition compact string is single-line
+- geolocation path is validated: source coordinates when valid, otherwise fallback-ready location/address mapping
 ```
 
 ---

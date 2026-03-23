@@ -98,6 +98,33 @@ The backend enforces these common rules for every source type:
 - outbound URLs must be `http` or `https`
 - localhost, private-network, and restricted hosts are blocked
 
+## Geolocation Mapping And Fallback Expectations
+
+Use this guidance when authoring schemas for any source type.
+
+- If the source provides valid coordinates, map and preserve that source geolocation evidence.
+- If source coordinates are missing or invalid, ingestion falls back to geocoding from text fields such as `location` and `venueAddress`.
+- Address query normalization is applied before geocoding, so cleaner `location` and `venueAddress` mappings improve results.
+- On updates, if an incoming event has no geometry, existing persisted geometry is retained rather than cleared.
+
+Coordinate validation guidance for contributors and AI:
+
+- Latitude must parse as a number in range `-90` to `90`.
+- Longitude must parse as a number in range `-180` to `180`.
+- Coordinates with both values missing, non-numeric, or out of range should be treated as invalid and should trigger fallback geocoding.
+- If source payload uses GeoJSON-style coordinate arrays, remember array order is usually longitude, latitude.
+
+Common source key patterns to look for during mapping:
+
+- latitude-like keys: `lat`, `latitude`, `geo.lat`, `location.latitude`, `geometry.location.lat`
+- longitude-like keys: `lng`, `lon`, `long`, `longitude`, `geo.lng`, `location.longitude`, `geometry.location.lng`
+- coordinate objects or arrays: `coordinates`, `geo`, `geometry`, `point`
+
+Authoring note:
+
+- Do not invent coordinates.
+- If explicit coordinate mapping is not supported for a source shape, provide high-quality `location` and `venueAddress` fields for geocoding fallback.
+
 ## JsonApi Additional Contract Rules
 
 `JsonApi` has extra schema-contract validation:
@@ -381,3 +408,4 @@ For `JsonApi`, also include:
 - confirmed event collection path used in production schema
 - any required headers or token dependencies
 - parser or mapping limitations discovered during iteration
+- geolocation note: `source-coordinates-used` or `geocode-fallback-expected`

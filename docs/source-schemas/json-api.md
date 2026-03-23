@@ -210,6 +210,24 @@ Guidance:
 6. Inspect `sampleEvents` carefully for field completeness.
 7. Submit the draft with `community-submissions`.
 
+## Optional Geolocation Mapping Pattern
+
+When the JSON source includes explicit coordinates, map them as source geolocation evidence and validate ranges before handoff.
+
+Example source patterns you may encounter:
+
+- flat fields: `latitude` and `longitude`
+- abbreviated fields: `lat` and `lng`, `lat` and `lon`
+- nested fields: `geo.lat` and `geo.lng`, `location.latitude` and `location.longitude`
+- GeoJSON-like arrays: `geometry.coordinates`
+
+Contributor guidance:
+
+- Prefer direct source coordinates when valid.
+- Keep `location` and `venueAddress` mappings even when coordinates exist, so fallback remains viable if some records omit coordinates.
+- If coordinate fields are inconsistent across records, treat out-of-range or non-numeric values as invalid and rely on fallback geocoding for those records.
+- Validate sample events for mixed data quality, not only one happy-path record.
+
 ## Endpoint Discovery (Generic)
 
 When the visible events page is JS-rendered, use this repeatable approach:
