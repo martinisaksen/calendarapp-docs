@@ -55,7 +55,7 @@ Instructions:
 
 Schema contract (must follow exactly):
 - `schemaDefinition` must be valid JSON and will be sent as a compact JSON string.
-- For `Ics`, use a validation-only schema unless stricter checks are needed.
+- For `Ics`, `schemaDefinition` may only contain `validation`. Do not include `mappings`, `eventMapping`, `url`, or any other field — the parser reads RFC 5545 fields (`SUMMARY`, `DTSTART`, `DTEND`, `DESCRIPTION`, `LOCATION`, `URL`, `UID`) directly from the feed. No mapping is required or supported.
 - For `Rss`, use `extractionRules` and map at least `title` and `startTime`.
 - For `JsonApi`, include `schemaVersion: 2` for new sources unless you are intentionally preserving a legacy v1 schema.
 - For `JsonApi`, include `eventArrayPath` and `mappings`.

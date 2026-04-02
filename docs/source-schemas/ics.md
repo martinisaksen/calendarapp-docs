@@ -47,7 +47,9 @@ Do not submit ICS payloads with top-level `url` or `eventMapping` fields.
 
 ## Wrong Vs Right Payload Shape
 
-Wrong for `test-fetch` and submissions in this API contract:
+The `Ics` `schemaDefinition` may only contain `validation`. **No other property is supported** — the parser reads RFC 5545 fields (`UID`, `SUMMARY`, `DTSTART`, `DTEND`, `DESCRIPTION`, `LOCATION`, `URL`) directly from the feed. Do not add `mappings`, `eventMapping`, or any other field.
+
+Wrong — top-level `url` instead of `feedUrl`, `eventMapping` inside `schemaDefinition`:
 
 ```json
 {
@@ -61,6 +63,24 @@ Wrong for `test-fetch` and submissions in this API contract:
     "startTime": "dtstart",
     "endTime": "dtend",
     "url": "url"
+  }
+}
+```
+
+Also wrong — `mappings` is equally unsupported in `schemaDefinition`:
+
+```json
+{
+  "type": "ics",
+  "url": "https://calendar.google.com/calendar/ical/lacentercalendar%40gmail.com/public/basic.ics",
+  "mappings": {
+    "id": "uid",
+    "title": "summary",
+    "description": "description",
+    "location": "location",
+    "startTime": "dtstart",
+    "endTime": "dtend",
+    "allDay": "allDay"
   }
 }
 ```
@@ -85,9 +105,17 @@ Also valid when you want explicit validation guards:
 }
 ```
 
-Why this is correct:
-- `Ics` parser reads RFC 5545 fields directly (for example `UID`, `SUMMARY`, `DESCRIPTION`, `LOCATION`, `DTSTART`, `DTEND`).
-- explicit `eventMapping` is not required for standard ICS feeds.
+Summary of rules:
+
+| Field | Correct location | Notes |
+|---|---|---|
+| `feedUrl` | top-level request field | not `url` |
+| `type` | top-level request field | value is `Ics` (capital I) |
+| `schemaDefinition` | top-level request field | compact JSON string |
+| `validation` | inside `schemaDefinition` only | only allowed property |
+| `mappings` | **nowhere** | unsupported for `Ics` |
+| `eventMapping` | **nowhere** | unsupported for `Ics` |
+| `url` | **nowhere** | use `feedUrl` at top level |
 
 ## Community Submission Example
 
