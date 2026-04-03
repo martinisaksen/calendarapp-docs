@@ -20,6 +20,9 @@
     "detailPage": {
       "$ref": "#/$defs/detailPageConfig"
     },
+    "eventEnrichment": {
+      "$ref": "#/$defs/eventEnrichment"
+    },
     "pagination": {
       "$ref": "#/$defs/htmlPaginationConfig"
     },
@@ -27,6 +30,28 @@
       "$ref": "#/$defs/validationRules"
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventEnrichment": {
+            "properties": {
+              "enabled": { "const": true },
+              "parser": { "const": "HtmlLite" }
+            },
+            "required": ["enabled", "parser"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "eventEnrichment": {
+            "required": ["htmlLiteMappings"]
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "mappingValue": {
       "type": "string",
@@ -130,6 +155,30 @@
             "minLength": 1
           },
           "minItems": 1
+        }
+      }
+    },
+    "eventEnrichment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "parser"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "parser": {
+          "type": "string",
+          "enum": ["GenericHtml", "HtmlLite"]
+        },
+        "maxFetchesPerRun": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sameHostOnly": {
+          "type": "boolean"
+        },
+        "htmlLiteMappings": {
+          "$ref": "#/$defs/htmlMappings"
         }
       }
     }

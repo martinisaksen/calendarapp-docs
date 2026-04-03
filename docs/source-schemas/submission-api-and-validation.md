@@ -8,6 +8,16 @@ Use these endpoints:
 - `POST /api/source-schemas/test-fetch`
 - `POST /api/source-schemas/community-submissions`
 
+## v3 Pipeline Draft (In Progress)
+
+CalendarApp is introducing a new `schemaDefinition` v3 contract with explicit calendar and event parser sections.
+
+- Overview: [Pipeline V3 Overview](v3/pipeline-overview.md)
+- Examples: [Pipeline V3 Examples](v3/pipeline-examples.md)
+- JSON Schema: [Pipeline V3 JSON Schema](v3/source-schema-v3.schema.json)
+
+This v3 model is a clean-break design for development and is expected to replace legacy schemaDefinition formats.
+
 Do not use admin-only approval or trigger endpoints as a community contributor.
 
 ## Shared Request Envelope
@@ -223,6 +233,87 @@ The response returns:
 - `validation.sampleEvents`
 - `validation.errorMessage`
 - `validation.validationErrors`
+
+## Local Testing: Copy-Paste Commands
+
+⚠️ **PowerShell and `&` in URLs:** PowerShell treats bare `&` as a background-job operator. Always build the body with `@{} | ConvertTo-Json` (as shown below) rather than an inline JSON string. This avoids escaping issues and works reliably with query-string URLs.
+
+### Test-Fetch (PowerShell)
+
+```powershell
+# PowerShell — ICS test-fetch
+# Use ConvertTo-Json to avoid & escaping issues with query-string URLs
+$body = @{
+    name        = "My ICS Source"
+    description = "Community events ICS feed"
+    type        = "Ics"
+    feedUrl     = "https://example.org/calendar?catID=1&feed=calendar"
+    schemaDefinition = "{}"
+    metadata    = @{
+        location = "Example City, WA"
+        region   = "WA"
+        category = "community"
+        language = "en"
+    }
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod -Uri "http://localhost:5047/api/source-schemas/test-fetch" `
+    -Method Post -Body $body -ContentType "application/json" -TimeoutSec 90
+```
+
+### Optional: Enable HTML Detail Enrichment In schemaDefinition
+
+If your source keeps richer details on event pages, configure enrichment directly in `schemaDefinition`.
+
+```json
+{
+  "eventEnrichment": {
+    "enabled": true,
+    "parser": "GenericHtml",
+    "maxFetchesPerRun": 5,
+    "sameHostOnly": true
+  }
+}
+```
+
+Notes:
+
+- `maxFetchesPerRun` should stay small for test-fetch (for example `3` to `5`).
+- `sameHostOnly: true` is recommended for safety.
+- When `parser` is `HtmlLite`, `htmlLiteMappings` is required.
+
+### Community Submission (PowerShell)
+
+Run this after test-fetch passes with a good event count.
+
+```powershell
+# PowerShell — community-submissions (after test-fetch passes)
+$schemaDef = @{
+    validation = @{
+        requiredFields     = @("title", "startTime")
+        minEventsPerFetch  = 1
+        maxEventsPerFetch  = 10000
+    }
+} | ConvertTo-Json -Depth 5 -Compress
+
+$body = @{
+    name        = "My ICS Source"
+    description = "Community events ICS feed"
+    type        = "Ics"
+    feedUrl     = "https://example.org/calendar?catID=1&feed=calendar"
+    schemaDefinition = $schemaDef
+    metadata    = @{
+        location          = "Example City, WA"
+        region            = "WA"
+        category          = "community"
+        language          = "en"
+        estimatedEventCount = 50
+    }
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod -Uri "http://localhost:5047/api/source-schemas/community-submissions" `
+    -Method Post -Body $body -ContentType "application/json" -TimeoutSec 90
+```
 
 ## Shared Validation Rules
 

@@ -168,6 +168,10 @@ For `Ics`:
 - send top-level `feedUrl` (not `url`) in test-fetch/submission payloads
 - keep `schemaDefinition` minimal (`{}` or validation-only) unless stricter checks are needed
 - do not add `eventMapping` for standard ICS feeds
+- `eventUrl` maps from the VEVENT `URL` field; relative URLs are resolved against `feedUrl`, and if the resolved URL points back to the source feed, the parser ignores it and extracts the first http/https URL from `DESCRIPTION` instead — no schema configuration needed
+- if a source keeps full event details only on HTML event pages, optional detail enrichment can be enabled with `schemaDefinition.eventEnrichment` (`enabled`, `parser`, `maxFetchesPerRun`, `sameHostOnly`)
+- if `eventEnrichment.parser = HtmlLite`, require `eventEnrichment.htmlLiteMappings`
+- for test-fetch/runtime parity, use the same `eventEnrichment` block in the payload used for `POST /api/source-schemas/test-fetch`
 
 Mapping DSL rules:
 - mapping values must be strings, never objects

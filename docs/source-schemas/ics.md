@@ -23,7 +23,7 @@ The `Ics` source schema submission to CalendarApp **has exactly this structure a
 }
 ```
 
-The `schemaDefinition` is a **compact JSON string** containing **only `validation`**:
+The `schemaDefinition` is a compact JSON string containing `validation` and optional `eventEnrichment`:
 
 ```json
 {
@@ -31,6 +31,12 @@ The `schemaDefinition` is a **compact JSON string** containing **only `validatio
     "requiredFields": ["title", "startTime"],
     "minEventsPerFetch": 1,
     "maxEventsPerFetch": 10000
+  },
+  "eventEnrichment": {
+    "enabled": true,
+    "parser": "GenericHtml",
+    "maxFetchesPerRun": 5,
+    "sameHostOnly": true
   }
 }
 ```
@@ -53,6 +59,23 @@ Use `Ics` when:
 
 Do not use `Ics` when you only have HTML or JSON.
 
+## ICS Field Mapping
+
+The parser reads standard RFC 5545 VEVENT fields automatically. No `mappings` configuration is needed or supported.
+
+| ICS VEVENT Field | Maps To | Notes |
+|---|---|---|
+| `SUMMARY` | `title` | Required. Events without SUMMARY are skipped. |
+| `DTSTART` | `startTime` | Required. Events without DTSTART are skipped. |
+| `DTEND` | `endTime` | Optional. Defaults to startTime + 1 hour when absent. |
+| `DESCRIPTION` | `description` | Optional. If `URL` is absent or resolves back to the source feed, the first http/https URL found in DESCRIPTION is used as `eventUrl`. |
+| `LOCATION` | `location` | Optional. Used for geocoding fallback when coordinates are absent. |
+| `URL` | `eventUrl` | Optional. Relative URLs are resolved against the source feed. If the resolved URL points back to the source feed, it is ignored and DESCRIPTION fallback is used instead. |
+| `UID` | identity key | Strongly recommended. Improves deduplication stability. |
+| `TZID` (on DTSTART) | `timeZone` | Carried through from the timezone identifier on the start field. |
+
+> **Note on `URL` vs `DESCRIPTION`:** Some sources use the `URL` VEVENT field for a shared category link rather than a per-event deep link. The parser resolves relative URLs against the source feed and ignores them when they normalize to the same target as the feed itself, even if query parameter order differs. In that case, if the `DESCRIPTION` field contains a bare absolute URL, the parser uses it as `eventUrl` automatically. You do not need to configure this — it is built-in fallback behavior.
+
 ## Test-Fetch Example
 
 ```json
@@ -63,9 +86,44 @@ Do not use `Ics` when you only have HTML or JSON.
 }
 ```
 
+## Optional: HTML Detail Enrichment For ICS
+
+Some ICS feeds provide only partial event detail in VEVENT fields, while full details live on an event page linked by `eventUrl`.
+
+CalendarApp supports optional HTML detail enrichment for `Ics` sources during ingestion and test-fetch.
+
+- The feed remains the calendar source of truth.
+- Detail pages are fetched only when enrichment is enabled.
+- Enrichment fills weak or missing fields such as `description`, `venueAddress`, `imageUrl`, and (when missing) `location`.
+- Strong ICS fields (`title`, `startTime`, `endTime`, `UID`) are not overridden.
+
+Enable with schema-level configuration in `schemaDefinition`:
+
+```json
+{
+  "eventEnrichment": {
+    "enabled": true,
+    "parser": "GenericHtml",
+    "maxFetchesPerRun": 5,
+    "sameHostOnly": true
+  }
+}
+```
+
+Use `parser: "HtmlLite"` only when you also provide `htmlLiteMappings`.
+
+Recommended starting values:
+
+
+- `enabled = true`
+- `maxFetchesPerRun = 25` for ingestion
+- `sameHostOnly = true`
+
+For test-fetch parity with runtime ingestion behavior, send the same `eventEnrichment` block in the payload used for `POST /api/source-schemas/test-fetch`.
+
 ## Wrong Vs Right Payload Shape
 
-The `Ics` `schemaDefinition` may only contain `validation`. **No other property is supported** — the parser reads RFC 5545 fields (`UID`, `SUMMARY`, `DTSTART`, `DTEND`, `DESCRIPTION`, `LOCATION`, `URL`) directly from the feed. Do not add `mappings`, `eventMapping`, or any other field.
+The `Ics` `schemaDefinition` supports `validation` and optional `eventEnrichment`. The parser still reads RFC 5545 fields (`UID`, `SUMMARY`, `DTSTART`, `DTEND`, `DESCRIPTION`, `LOCATION`, `URL`) directly from the feed. Do not add `mappings`, `eventMapping`, or transform blocks.
 
 Wrong — top-level `url` instead of `feedUrl`, `eventMapping` inside `schemaDefinition`:
 
@@ -130,7 +188,8 @@ Summary of rules:
 | `feedUrl` | top-level request field | not `url` |
 | `type` | top-level request field | value is `Ics` (capital I) |
 | `schemaDefinition` | top-level request field | compact JSON string |
-| `validation` | inside `schemaDefinition` only | only allowed property |
+| `validation` | inside `schemaDefinition` | optional validation constraints |
+| `eventEnrichment` | inside `schemaDefinition` | optional detail-page enrichment settings |
 | `mappings` | **nowhere** | unsupported for `Ics` |
 | `eventMapping` | **nowhere** | unsupported for `Ics` |
 | `url` | **nowhere** | use `feedUrl` at top level |

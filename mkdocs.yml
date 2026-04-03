@@ -36,6 +36,9 @@ nav:
       - Choose A Source Type: source-schemas/choose-source-type.md
       - Submission API And Validation: source-schemas/submission-api-and-validation.md
       - Source Schema JSON Schema Files: source-schemas/json-schema-files.md
+      - Pipeline V3 Overview (Draft): source-schemas/v3/pipeline-overview.md
+      - Pipeline V3 Examples (Draft): source-schemas/v3/pipeline-examples.md
+      - Pipeline V3 JSON Schema (Draft): source-schemas/v3/source-schema-v3.schema.json
       - Validation Checklist: source-schemas/html-lite/validation-checklist.md
       - Troubleshooting: source-schemas/html-lite/troubleshooting.md
     - Ics Reference:
