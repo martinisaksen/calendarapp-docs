@@ -67,6 +67,11 @@ Combinations outside this matrix are rejected by schema validation.
 
 Calendar stage output must include enough fields for event stage input when event stage is not `None`.
 
+Calendar stage fetch options may include:
+- `fetch.authentication` for bearer, API key, or basic auth
+- `fetch.requestHeaders` for non-restricted custom headers
+- `fetch.pagination` for page, offset, or cursor traversal
+
 Event stage input modes:
 - `none`
 - `calendarFieldUrl`

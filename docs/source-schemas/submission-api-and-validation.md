@@ -8,15 +8,15 @@ Use these endpoints:
 - `POST /api/source-schemas/test-fetch`
 - `POST /api/source-schemas/community-submissions`
 
-## v3 Pipeline Draft (In Progress)
+## v3 Pipeline Contract (Current)
 
-CalendarApp is introducing a new `schemaDefinition` v3 contract with explicit calendar and event parser sections.
+CalendarApp uses the `schemaDefinition` v3 contract for new source authoring and submission, with explicit calendar and event parser stages.
 
 - Overview: [Pipeline V3 Overview](v3/pipeline-overview.md)
 - Examples: [Pipeline V3 Examples](v3/pipeline-examples.md)
 - JSON Schema: [Pipeline V3 JSON Schema](v3/source-schema-v3.schema.json)
 
-This v3 model is a clean-break design for development and is expected to replace legacy schemaDefinition formats.
+The v3 model is the active clean-break contract for contributor-facing payloads.
 
 Do not use admin-only approval or trigger endpoints as a community contributor.
 
@@ -32,7 +32,7 @@ Both `test-fetch` and `community-submissions` accept the same payload structure.
   "description": "What this source publishes",
   "type": "JsonApi",
   "feedUrl": "https://example.org/events",
-  "schemaDefinition": "{\"eventArrayPath\":\"$.events[*]\",\"mappings\":{\"title\":\"$.title\",\"startTime\":\"$.start\"}}",
+  "schemaDefinition": "{\"schemaVersion\":3,\"pipeline\":{\"calendar\":{\"type\":\"Json\",\"parser\":{\"eventArrayPath\":\"$.events[*]\",\"mappings\":{\"title\":\"$.title\",\"startTime\":\"$.start\"}}},\"event\":{\"type\":\"None\",\"input\":{\"mode\":\"none\"},\"parser\":{}}}}",
   "metadata": {
     "location": "Example City",
     "category": "community",
@@ -358,14 +358,12 @@ Authoring note:
 
 `JsonApi` has extra schema-contract validation:
 
-- new JsonApi sources should default to `schemaVersion = 2`
-- `schemaVersion` must be `1` or `2` when provided
-- advanced features require `schemaVersion = 2`
-- `validationProfile = Advanced` requires `schemaVersion = 2`
-- `validationProfile = Basic` cannot be used with advanced features
-- `requestWorkflow` and `pagination` cannot both be configured
+- `schemaVersion` must be `3`
+- `pipeline.calendar` and `pipeline.event` are required
+- calendar stage parser options belong under `pipeline.calendar.parser`
+- stage fetch options belong under `pipeline.calendar.fetch` and `pipeline.event.fetch`
+- `requestWorkflow` and `pagination` cannot both be configured in the same stage
 - `pagination.maxRequestsPerRun` must be greater than `0` when provided
-- dynamic token acquisition requires `tokenConfig.dynamicAcquisition.endpoint`
 
 ## Type-Specific Minimum Shapes
 
@@ -373,8 +371,21 @@ Authoring note:
 
 ```json
 {
-  "validation": {
-    "requiredFields": ["title", "startTime"]
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "Ics",
+      "parser": {
+        "validation": {
+          "requiredFields": ["title", "startTime"]
+        }
+      }
+    },
+    "event": {
+      "type": "None",
+      "input": { "mode": "none" },
+      "parser": {}
+    }
   }
 }
 ```
@@ -383,12 +394,25 @@ Authoring note:
 
 ```json
 {
-  "extractionRules": {
-    "title": "title",
-    "startTime": "pubDate"
-  },
-  "validation": {
-    "requiredFields": ["title", "startTime"]
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "Rss",
+      "parser": {
+        "extractionRules": {
+          "title": "title",
+          "startTime": "pubDate"
+        },
+        "validation": {
+          "requiredFields": ["title", "startTime"]
+        }
+      }
+    },
+    "event": {
+      "type": "None",
+      "input": { "mode": "none" },
+      "parser": {}
+    }
   }
 }
 ```
@@ -397,60 +421,58 @@ Authoring note:
 
 ```json
 {
-  "schemaVersion": 2,
-  "eventArrayPath": "$.events[*]",
-  "mappings": {
-    "title": "$.title",
-    "startTime": "$.start"
-  },
-  "validation": {
-    "requiredFields": ["title", "startTime"]
-  }
-}
-```
-
-When the source splits date/time fields or exposes source timezone, a practical v2 shape often looks more like this:
-
-```json
-{
-  "schemaVersion": 2,
-  "eventArrayPath": "$.events[*]",
-  "mappings": {
-    "title": "$.title",
-    "startTime": "$.startTime",
-    "endTime": "$.endTime",
-    "timeZone": "$.timeZone"
-  },
-  "responseTransforms": {
-    "flattenPath": "$.events[*]",
-    "fields": {
-      "startTime": {
-        "type": "Composite",
-        "template": "{{startDate}} {{startClock}}",
-        "inputs": {
-          "startDate": "$.start.date",
-          "startClock": "$.start.time"
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "Json",
+      "parser": {
+        "eventArrayPath": "$.events[*]",
+        "mappings": {
+          "title": "$.title",
+          "startTime": "$.start"
+        },
+        "validation": {
+          "requiredFields": ["title", "startTime"]
         }
       }
+    },
+    "event": {
+      "type": "None",
+      "input": { "mode": "none" },
+      "parser": {}
     }
-  },
-  "validation": {
-    "requiredFields": ["title", "startTime"]
   }
 }
 ```
+
+When the source splits date/time fields or exposes source timezone, place transforms in `pipeline.calendar.parser.responseTransforms`.
+For historical v1/v2 examples, see the legacy JsonApi v2 reference page.
 
 ### HtmlLite
 
 ```json
 {
-  "eventCardSelector": "div.event-card",
-  "mappings": {
-    "title": "h3",
-    "startTime": "time::attr(datetime)"
-  },
-  "validation": {
-    "requiredFields": ["title", "startTime"]
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "HtmlLite",
+      "parser": {
+        "eventCardSelector": "div.event-card",
+        "mappings": {
+          "title": "h3",
+          "startTime": "time::attr(datetime)",
+          "url": "a::attr(href)"
+        },
+        "validation": {
+          "requiredFields": ["title", "startTime"]
+        }
+      }
+    },
+    "event": {
+      "type": "None",
+      "input": { "mode": "none" },
+      "parser": {}
+    }
   }
 }
 ```

@@ -89,14 +89,14 @@ Terminal failure:
 Structured-source bootstrap rules:
 - `Ics`: use a minimal validation-only schemaDefinition unless the source needs stricter required fields
 - `Rss`: define `extractionRules` and map at least `title` and parseable `startTime`
-- `JsonApi`: start new sources at `schemaVersion = 2`, define `eventArrayPath` plus `mappings`, then add pagination or auth only if needed
+- `JsonApi`: use v3 pipeline format (`schemaVersion = 3`) with `pipeline.calendar` and `pipeline.event`
 
 JsonApi bootstrap guardrails:
 
-1. Start with `schemaVersion = 2` for new sources.
-2. Start with minimal mappings (`title`, `startTime`) and requiredFields aligned to those mappings.
+1. Use `schemaVersion = 3` with `pipeline.calendar` and `pipeline.event` for new sources.
+2. Start with minimal `pipeline.calendar.parser.mappings` (`title`, `startTime`) and requiredFields aligned to those mappings.
 3. Validate event path first, then expand field coverage.
-4. If the source splits date and time across fields, use `responseTransforms` to compose parser-ready `startTime` and `endTime` values.
+4. If the source splits date and time across fields, use `pipeline.calendar.parser.responseTransforms` to compose parser-ready `startTime` and `endTime` values.
 5. If the source provides timezone, map `timeZone` from source data.
 6. If zero events parse, adjust one variable at a time (path, mapping scope, transform shape, headers, pagination).
 7. Capture parser-compatibility notes when a path syntax assumption fails.
@@ -155,10 +155,9 @@ Request envelope preflight checks (mandatory before POST):
 4. For `Ics`, keep `schemaDefinition` as `{}` or validation-only; do not generate `eventMapping`, `mappings`, `transforms`, or parser-specific extraction blocks.
 
 For `JsonApi`:
-- new sources should default to `schemaVersion = 2`
-- `schemaVersion` must be `1` or `2` when provided
-- advanced features require `schemaVersion = 2`
-- `requestWorkflow` and `pagination` cannot both be configured
+- `schemaVersion` must be `3`
+- `pipeline.calendar` and `pipeline.event` are required
+- parser and fetch options belong under stage nodes (for example `pipeline.calendar.parser`, `pipeline.calendar.fetch`)
 
 For `Rss`:
 - `extractionRules` values should resolve against each feed item

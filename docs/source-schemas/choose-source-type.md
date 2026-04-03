@@ -31,7 +31,7 @@ Use these rules before you commit to a source type:
 |---|---|---|---|
 | `Ics` | The source publishes a valid `.ics` or iCalendar feed | You only have HTML or JSON | Validation-only object or `{}` |
 | `Rss` | The source publishes RSS or Atom and each item acts like an event | The feed is a news/blog feed without event dates | `extractionRules` plus optional `validation` |
-| `JsonApi` | The site exposes events through JSON responses | A better ICS or RSS feed already contains the same data | `eventArrayPath` and `mappings`, plus optional pagination/auth/workflow |
+| `JsonApi` | The site exposes events through JSON responses | A better ICS or RSS feed already contains the same data | `schemaVersion = 3` with `pipeline.calendar` and `pipeline.event` |
 | `HtmlLite` | Event cards are present in static HTML without browser execution | The page is JS-rendered and the events are not present in initial HTML | `eventCardSelector` and `mappings`, plus optional detail/pagination |
 
 ## How To Recognize Each Type

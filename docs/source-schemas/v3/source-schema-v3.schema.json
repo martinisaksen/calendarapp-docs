@@ -377,6 +377,9 @@
           "type": "string",
           "enum": ["GET", "POST"]
         },
+        "authentication": {
+          "$ref": "#/$defs/authenticationConfig"
+        },
         "requestHeaders": {
           "type": "object",
           "maxProperties": 50,
@@ -389,6 +392,25 @@
         },
         "pagination": {
           "type": "object"
+        }
+      }
+    },
+    "authenticationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": ["string", "integer"],
+          "enum": ["None", "ApiKey", "Bearer", "Basic", 0, 1, 2, 3]
+        },
+        "headerName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "secret": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },

@@ -35,7 +35,8 @@ source type. Use them to validate or generate a `schemaDefinition` before callin
 
 - [ICS schemaDefinition JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/ics.schema.json)
 - [RSS schemaDefinition JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/rss.schema.json)
-- [JsonApi V2 schemaDefinition JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/json-api-v2.schema.json)
+- [Pipeline V3 schemaDefinition JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/v3/source-schema-v3.schema.json)
+- [JsonApi V2 schemaDefinition JSON Schema (legacy)](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/json-api-v2.schema.json)
 - [HtmlLite schemaDefinition JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/html-lite.schema.json)
 
 ## API request envelope contract (JSON Schema)

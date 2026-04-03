@@ -33,7 +33,8 @@ The backend remains authoritative for:
 
 ## Practical Guidance
 
-- Default new `JsonApi` sources to `schemaVersion = 2`.
+- Use this v2 schema only for historical reference and legacy schema audits.
+- For new `JsonApi` sources, use the v3 pipeline contract (`schemaVersion = 3`).
 - If the source splits date and time across fields, use `responseTransforms` to compose parser-ready `startTime` and `endTime` values.
 - If the source provides timezone, map `timeZone` from the source.
 - If transforms reshape the effective event payload, set `responseTransforms.flattenPath` explicitly.

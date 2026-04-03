@@ -49,7 +49,7 @@ nav:
       - Rss JSON Schema: source-schemas/rss.schema.json
     - JsonApi Reference:
       - Overview: source-schemas/json-api.md
-      - JsonApi V2 JSON Schema: source-schemas/json-api-v2-json-schema.md
+      - JsonApi V2 JSON Schema (Legacy): source-schemas/json-api-v2-json-schema.md
     - HtmlLite Reference:
       - Overview: source-schemas/html-lite/overview.md
       - HtmlLite JSON Schema: source-schemas/html-lite.schema.json
