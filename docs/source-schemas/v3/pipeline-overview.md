@@ -72,6 +72,10 @@ Calendar stage fetch options may include:
 - `fetch.requestHeaders` for non-restricted custom headers
 - `fetch.pagination` for page, offset, or cursor traversal
 
+For Html calendar parsers, calendar parser options can also include `multiDateExpansion`.
+This allows one calendar card to emit multiple occurrence events from a date-list field.
+When combined with `detailPage.occurrenceSelector`, expansion determines event count and detail occurrence matching only refines emitted events.
+
 Event stage input modes:
 - `none`
 - `calendarFieldUrl`

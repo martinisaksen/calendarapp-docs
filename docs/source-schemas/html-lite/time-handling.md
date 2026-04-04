@@ -50,11 +50,11 @@ Behavior:
 
 ## Date Range Parsing & Silent Failures
 
-⚠️ **Critical Limitation:** Date ranges are NOT supported. When a date format cannot be parsed as a single datetime, the event is silently skipped (no error, just zero events parsed).
+⚠️ **Important:** Unstructured date ranges are still not supported by default single-date parsing. Use `multiDateExpansion` for deterministic list-style multi-date strings.
 
 ### Examples of What Fails
 
-**Fails (events silently dropped):**
+**Fails (without `multiDateExpansion`):**
 - "May 8 - 24, 2026" ← Date range
 - "June 6 & 7, 2026" ← Multiple dates with ampersand
 - "June 27 - July 19, 2026" ← Cross-month range
@@ -76,7 +76,28 @@ Behavior:
 
 ### Workarounds
 
-**Option 1: Extract only the first date from a range**
+**Option 1: Expand one card into multiple occurrences (recommended)**
+
+Use `multiDateExpansion` in HtmlLite parser config:
+
+```json
+"multiDateExpansion": {
+  "enabled": true,
+  "sourceField": "startTime",
+  "defaultTime": "7:30 PM",
+  "defaultTimeZone": "America/Los_Angeles",
+  "fallbackMode": "legacySingle",
+  "limits": {
+    "maxOccurrencesPerCard": 12,
+    "maxExpandedEventsPerRun": 500,
+    "maxParseFailuresPerCard": 3
+  }
+}
+```
+
+This enables one-card-to-many-events fan-out for supported multi-date list formats.
+
+**Option 2: Extract only the first date from a range**
 ```json
 "fieldTransforms": {
   "startTime": [
@@ -87,13 +108,13 @@ Behavior:
 ```
 Then use regex or post-processing to extract text before the pipe.
 
-**Option 2: Use detail page enrichment**
+**Option 3: Use detail page enrichment**
 If list pages show date ranges but detail pages have specific start/end times:
 - Set list `startTime` to a `literal:` placeholder
 - Enable `detailPage.enabled: true`
 - Map actual dates in `detailPage.detailMappings`
 
-**Option 3: Create separate sources**
+**Option 4: Create separate sources**
 For venue+date combinations, create distinct sources:
 - Source 1: Events happening June 6
 - Source 2: Events happening June 7
@@ -117,13 +138,18 @@ Also strip connector words such as `at` that appear between the date and time st
 }
 ```
 
-## Multi-Date Strings — Extracting the First Date Only
+## Multi-Date Strings — First Date vs Expansion
 
 Some performing arts sites encode multiple performance dates in a single string, for example:
 
 > `Saturday, April 11, 2026 at 7:00 p.m. & Sunday, April 12, 2026 at 3:00 p.m.`
 
-Use `RegexReplace` to strip everything from the delimiter onward **before** applying other date transforms. Apply it as the first transform in the chain.
+There are two supported patterns:
+
+1. **Preferred:** use `multiDateExpansion` to create one event per occurrence.
+2. **Fallback:** keep first-date-only transforms when you intentionally want one representative occurrence.
+
+First-date-only transform example:
 
 ```json
 "fieldTransforms": {
@@ -137,7 +163,17 @@ Use `RegexReplace` to strip everything from the delimiter onward **before** appl
 }
 ```
 
-> **Note:** This chain captures only the first performance date. If the source needs a separate event entry per performance, an ICS or JSON-API feed is a better fit than HtmlLite.
+> **Note:** This chain captures only the first performance date. For one-occurrence-per-performance output inside HtmlLite, prefer `multiDateExpansion`.
+
+## Composition With Detail Occurrence Matching
+
+When both `multiDateExpansion` and `detailPage.occurrenceSelector` are configured:
+
+1. `multiDateExpansion` determines event count
+2. `detailPage.occurrenceSelector` refines the matching expanded event
+3. Detail occurrence matching does not fan out additional events
+
+This precedence keeps behavior deterministic and avoids duplicate ownership of fan-out logic.
 
 ## Default Behavior
 

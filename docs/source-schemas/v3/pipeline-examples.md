@@ -151,3 +151,67 @@ Use `Ics -> None` when the ICS feed provides complete event data and no HTML det
   }
 }
 ```
+
+## Html -> Html with Multi-Date Expansion
+
+Use this when one HTML event card contains multiple occurrence dates in one text field.
+
+```json
+{
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "Html",
+      "parser": {
+        "eventCardSelector": ".event-card",
+        "mappings": {
+          "id": "a@href",
+          "title": "h3",
+          "startTime": ".showings",
+          "url": "a@href",
+          "timeZone": "literal:America/Los_Angeles"
+        },
+        "multiDateExpansion": {
+          "enabled": true,
+          "sourceField": "startTime",
+          "defaultTime": "7:30 PM",
+          "defaultTimeZone": "America/Los_Angeles",
+          "fallbackMode": "legacySingle",
+          "limits": {
+            "maxOccurrencesPerCard": 12,
+            "maxExpandedEventsPerRun": 500,
+            "maxParseFailuresPerCard": 3
+          }
+        },
+        "detailPage": {
+          "enabled": true,
+          "linkSelector": "a@href",
+          "occurrenceSelector": ".occurrence",
+          "occurrenceMappings": {
+            "startTime": ".occ-start::attr(datetime)",
+            "endTime": ".occ-end::attr(datetime)"
+          }
+        }
+      }
+    },
+    "event": {
+      "type": "Html",
+      "input": { "mode": "calendarFieldUrl", "field": "eventUrl" },
+      "parser": { "mappings": {} },
+      "limits": {
+        "sameHostOnly": true,
+        "maxRequestsPerRun": 10
+      }
+    }
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime", "url"]
+  }
+}
+```
+
+Composition rule:
+
+1. `multiDateExpansion` determines how many events are emitted from each card.
+2. `detailPage.occurrenceSelector` refines each emitted event.
+3. Detail occurrence matching does not change event count.

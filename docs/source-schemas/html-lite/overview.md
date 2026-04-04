@@ -20,6 +20,7 @@ This reference is shared by both tracks:
 - Selector language: limited CSS-like selectors plus `xpath=`
 - `detailPage.linkSelector` must resolve to a URL
 - `detailPage.detailMappings` run against detail-page DOM
+- `multiDateExpansion` can fan out one card into multiple occurrences from a single date-list field
 - `fieldTransforms` supports deterministic low-risk per-field cleanup after extraction
 - Detail-page enrichment runs when both `detailPage.enabled=true` and `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is not set to disable it
 - `pagination.type` allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
@@ -35,6 +36,31 @@ Low-risk `fieldTransforms` types:
 - `nullIfEqualsAny`
 
 Avoid high-risk transform patterns such as regex/expression execution or cross-field semantic reconstruction.
+
+## Multi-Date Expansion
+
+Use `multiDateExpansion` when one event card contains a list of occurrence dates (for example theater showings).
+
+### Contract summary
+
+- `multiDateExpansion.enabled`: opt-in flag (default off)
+- `multiDateExpansion.sourceField`: mapped field containing the date-list text (usually `startTime`)
+- `multiDateExpansion.limits`: required bounds for per-card and per-run expansion
+- `multiDateExpansion.fallbackMode`: `legacySingle` or `skipCard`
+
+### Precedence when combined with detailPage occurrence matching
+
+HtmlLite supports composition with a strict precedence rule:
+
+1. `multiDateExpansion` determines event count (fan-out ownership)
+2. `detailPage.occurrenceSelector` only refines already-expanded events
+3. Detail occurrence matching cannot create or remove events
+
+This avoids overlapping ownership and keeps output deterministic.
+
+### Authoring note
+
+If your source currently uses a first-date-only regex workaround, prefer `multiDateExpansion` for true one-occurrence-per-performance output.
 
 ## AI-First Workflow From A Starting URL
 
