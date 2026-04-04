@@ -152,6 +152,66 @@ Use `Ics -> None` when the ICS feed provides complete event data and no HTML det
 }
 ```
 
+## Json -> Html (Cross-Host Detail Description)
+
+Use this pattern when:
+
+- list API host differs from public detail-page host
+- list payload has sparse or empty `description`
+- detail HTML contains full event body
+
+```json
+{
+  "schemaVersion": 3,
+  "pipeline": {
+    "calendar": {
+      "type": "Json",
+      "fetch": {
+        "method": "Post"
+      },
+      "parser": {
+        "eventArrayPath": "$.hits[*]",
+        "mappings": {
+          "id": "$.objectID",
+          "title": "$.title",
+          "startTime": "$.dates[*]",
+          "eventUrl": "$.url",
+          "venueName": "literal:The Museum",
+          "venueAddress": "literal:1945 SE Water Ave, Portland, OR 97214",
+          "location": "literal:1945 SE Water Ave, Portland, OR 97214"
+        }
+      }
+    },
+    "event": {
+      "type": "Html",
+      "input": {
+        "mode": "calendarFieldUrl",
+        "field": "eventUrl",
+        "baseUrl": "https://omsi.edu"
+      },
+      "parser": {
+        "mappings": {
+          "description": ".container-content"
+        }
+      },
+      "limits": {
+        "sameHostOnly": false,
+        "maxRequestsPerRun": 25
+      }
+    }
+  },
+  "validation": {
+    "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+Notes:
+
+- `sameHostOnly: false` is required when list and detail hosts differ.
+- `input.baseUrl` ensures detail links resolve to the public content host.
+- detail values override defaults only when detail values are non-empty.
+
 ## Html -> Html with Multi-Date Expansion
 
 Use this when one HTML event card contains multiple occurrence dates in one text field.

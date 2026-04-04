@@ -87,6 +87,11 @@ Current v3 guardrails to account for during authoring:
 
 Those do not belong in the submitted schema body.
 
+Clarification:
+
+- top-level `baseUrl` is invalid
+- `pipeline.event.input.baseUrl` is valid in v3 when using `mode: "calendarFieldUrl"`
+
 ## Wrong Vs Right: ICS Request Envelope
 
 This is a common cross-contract mistake when using examples from other systems.
@@ -217,6 +222,19 @@ Always test first with `/api/source-schemas/test-fetch`. If test returns `eventC
   }
 }
 ```
+
+---
+
+### ❌ Mistake 5: Expecting list payload `description` to be complete
+
+Some Json list APIs return rich list metadata but blank description fields.
+If `sampleEvents.description` is empty after list parsing:
+
+1. Add event-stage enrichment (`pipeline.event.type = "Html"` or `"Json"`).
+2. Use `input.mode: "calendarFieldUrl"` with `field: "eventUrl"`.
+3. Set `pipeline.event.input.baseUrl` when list links are relative or host-mismatched.
+4. Map `description` from detail content in `pipeline.event.parser.mappings`.
+5. Re-run test-fetch and verify description is populated in sample events.
 
 ---
 
@@ -370,6 +388,14 @@ The backend enforces these common rules for every source type:
 - `requestHeaders` cannot exceed 50 entries when present
 - outbound URLs must be `http` or `https`
 - localhost, private-network, and restricted hosts are blocked
+- event/detail links are required to be fully qualified `http`/`https` URLs when provided to downstream fetch stages
+- relative event links are acceptable only when they can be resolved against `feedUrl`; unresolved or non-URL values are rejected as invalid links
+
+Field precedence expectation for enrichment:
+
+- detail value first
+- calendar default second
+- empty/null last
 
 ## Geolocation Mapping And Fallback Expectations
 

@@ -100,6 +100,8 @@ JsonApi bootstrap guardrails:
 5. If the source provides timezone, map `timeZone` from source data.
 6. If zero events parse, adjust one variable at a time (path, mapping scope, transform shape, headers, pagination).
 7. Capture parser-compatibility notes when a path syntax assumption fails.
+8. If list payload descriptions are empty, switch to detail enrichment and map description from event detail content.
+9. When list links are relative or API-hosted, set `pipeline.event.input.baseUrl` to the public content host.
 
 Geolocation decision loop:
 
@@ -217,6 +219,7 @@ For every iteration, record:
 2. `validation.isSuccess`
 3. `validation.totalEventsParsed`
 4. any `validation.errorMessage`
+5. whether `sampleEvents.description` is populated when description is expected
 
 Do not batch multiple schema changes in a single retry unless blocked by request-shape validity.
 
@@ -226,6 +229,14 @@ When `validation.totalEventsParsed = 0`, retry in this order:
 3. verify transformed `startTime` and `endTime` are actually populated after mappings/transforms
 4. map `timeZone` when the source provides it
 5. add or correct pagination
+
+When `validation.totalEventsParsed > 0` but `description` remains empty for JsonApi/Html sources:
+
+1. verify list payload description fields are actually populated
+2. if list description is sparse, enable event-stage detail enrichment
+3. use `input.mode: "calendarFieldUrl"`, `field: "eventUrl"`, and set `input.baseUrl` for relative or host-mismatched links
+4. map detail `description` and re-run `test-fetch`
+5. confirm `sampleEvents` shows non-empty description before submission
 
 For JsonApi specifically, remember that a zero-event result can mean either:
 - event path selection matched no event nodes

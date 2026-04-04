@@ -83,6 +83,7 @@ Event stage input modes:
 
 Current implementation note:
 - In current phase-2 scaffolding, `pipeline.event.input.field` is restricted to `eventUrl` when `event.type` is `Html` or `Json`.
+- For `calendarFieldUrl`, you can optionally set `pipeline.event.input.baseUrl` to resolve/rebase detail links to the public content host.
 
 ## Event Input Modes Reference
 
@@ -95,6 +96,8 @@ The `pipeline.event.input.mode` determines how per-event details are obtained. C
 | `fixedUrl` | All events use the same detail page URL pattern; substitute event ID into template | Detail URL is predictable: `https://example.com/events/{eventId}` | `{ "mode": "fixedUrl", "url": "https://example.com/events/{id}" }` |
 
 ### Decision Tree
+
+For exact `calendarFieldUrl` constraints and `baseUrl` behavior, see [Event Input Constraints](event-input-constraints.md).
 
 1. **Does your calendar stage output complete event data?**
   - Yes → Keep `event` lightweight, but still choose an allowed pair for your calendar type

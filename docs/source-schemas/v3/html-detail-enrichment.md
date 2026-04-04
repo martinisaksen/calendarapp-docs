@@ -29,6 +29,24 @@ Recommendation:
 - Pick one primary enrichment path per source.
 - If migrating, disable old detail mappings before enabling equivalent event-stage mappings.
 
+## Merge Precedence (Detail Vs Defaults)
+
+When event-stage detail enrichment is enabled, use this precedence:
+
+1. Detail value (from event-stage fetch)
+2. Calendar-stage value (including `literal:` defaults)
+3. Empty/null
+
+This applies to commonly enriched fields such as:
+
+- `location`
+- `venueName`
+- `venueAddress`
+- `imageUrl`
+- `eventUrl`
+
+Calendar defaults are fallback-only and must not overwrite non-empty detail values.
+
 ## Minimal pattern examples
 
 Pattern A:

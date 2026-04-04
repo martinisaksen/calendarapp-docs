@@ -60,6 +60,28 @@ Add these only when needed:
 - `pipeline.calendar.fetch.requestHeaders` for required headers
 - `pipeline.calendar.parser.responseTransforms` for shaping split date/time fields
 
+## Literal Defaults In Mappings
+
+JsonApi mappings support `literal:` values for stable defaults.
+
+Use this when source-level venue data is constant and per-event payloads are sparse.
+
+```json
+"mappings": {
+  "title": "$.title",
+  "startTime": "$.start",
+  "venueName": "literal:The Museum",
+  "venueAddress": "literal:1945 SE Water Ave, Portland, OR 97214",
+  "location": "literal:1945 SE Water Ave, Portland, OR 97214"
+}
+```
+
+Precedence note:
+
+- event/detail stage value (if present)
+- calendar-stage mapped value (including `literal:` defaults)
+- empty/null
+
 ## Practical Pattern: Split Date And Time
 
 ```json
@@ -107,6 +129,18 @@ Add these only when needed:
 - `pipeline.calendar.parser.eventArrayPath` is required
 - `pipeline.calendar.parser.mappings` should be non-empty
 - `requestWorkflow` and pagination cannot both be configured in the same stage
+- event links must be fully qualified `http`/`https` URLs
+- relative links are resolved against `feedUrl`; non-URL values are treated as missing
+
+## List Metadata + Detail Description Pattern
+
+Some APIs provide complete list metadata (`title`, `dates`, `url`) but empty list descriptions.
+In that case:
+
+1. Keep calendar stage as `Json` for list extraction.
+2. Set event stage to `Html` (or `Json`) and fetch per-event details from `eventUrl`.
+3. Map `description` from detail content in `pipeline.event.parser.mappings`.
+4. Validate that sample events now include non-empty descriptions.
 
 ## Recommended Workflow
 
@@ -114,5 +148,6 @@ Add these only when needed:
 2. Start from the minimum v3 shape.
 3. Map `title` and `startTime` first.
 4. Add URL, location, and optional enrichment fields.
-5. Run `test-fetch` and inspect sample events.
-6. Submit draft via community submissions.
+5. Ensure mapped `url`/`eventUrl` values resolve to fully qualified `http`/`https` links.
+6. Run `test-fetch` and inspect sample events.
+7. Submit draft via community submissions.

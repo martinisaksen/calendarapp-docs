@@ -17,7 +17,8 @@ For event types `Html` and `Json`, current phase-2 scaffolding accepts only:
 ```json
 "input": {
   "mode": "calendarFieldUrl",
-  "field": "eventUrl"
+  "field": "eventUrl",
+  "baseUrl": "https://example.org"
 }
 ```
 
@@ -25,11 +26,21 @@ If `field` is not `eventUrl`, test-fetch fails with an error equivalent to:
 
 - `phase 2 scaffolding currently supports only pipeline.event.input.field = eventUrl.`
 
+`baseUrl` is optional and applies only to `calendarFieldUrl` mode.
+
+Behavior:
+
+- relative `eventUrl` values are resolved against `input.baseUrl` when present
+- when `baseUrl` is omitted, relative links fall back to feed-based resolution behavior
+- if a list payload URL is absolute but points to an API host, `baseUrl` can rebase host/path to the public content host
+- if URL normalization fails, detail fetch is skipped for that event
+
 ## How to satisfy this constraint
 
 1. Ensure calendar mappings include `eventUrl`.
 2. Use `field: "eventUrl"` in event input.
-3. Validate with `/api/source-schemas/test-fetch`.
+3. Add `baseUrl` when list links are relative or host-mismatched.
+4. Validate with `/api/source-schemas/test-fetch`.
 
 Example calendar mapping:
 
