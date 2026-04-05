@@ -1,0 +1,440 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/v3/source-schema-v3.schema.json",
+  "title": "CalendarApp source schemaDefinition v3 pipeline",
+  "description": "Two-stage source schemaDefinition contract with calendar and event parser sections.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "pipeline"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 3
+    },
+    "pipeline": {
+      "$ref": "#/$defs/pipeline"
+    },
+    "validation": {
+      "$ref": "#/$defs/validationRules"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "calendar": {
+                "properties": { "type": { "const": "Ics" } },
+                "required": ["type"]
+              }
+            },
+            "required": ["calendar"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "type": { "enum": ["None", "Html", "Json"] }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "calendar": {
+                "properties": { "type": { "const": "Html" } },
+                "required": ["type"]
+              }
+            },
+            "required": ["calendar"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "type": { "enum": ["Html", "Json"] }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "calendar": {
+                "properties": { "type": { "const": "Json" } },
+                "required": ["type"]
+              }
+            },
+            "required": ["calendar"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "type": { "enum": ["None", "Html", "Json"] }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "calendar": {
+                "properties": { "type": { "const": "Rss" } },
+                "required": ["type"]
+              }
+            },
+            "required": ["calendar"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "type": { "enum": ["None", "Html", "Json"] }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": { "type": { "const": "None" } },
+                "required": ["type"]
+              }
+            },
+            "required": ["event"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "input": {
+                    "properties": { "mode": { "const": "none" } },
+                    "required": ["mode"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "type": { "enum": ["Html", "Json"] }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "required": ["limits"],
+                "properties": {
+                  "input": {
+                    "properties": {
+                      "mode": { "enum": ["calendarFieldUrl", "fixedUrl"] }
+                    },
+                    "required": ["mode"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "input": {
+                    "properties": {
+                      "mode": { "const": "calendarFieldUrl" }
+                    },
+                    "required": ["mode"]
+                  }
+                },
+                "required": ["input"]
+              }
+            },
+            "required": ["event"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "input": {
+                    "required": ["field"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "input": {
+                    "properties": {
+                      "mode": { "const": "fixedUrl" }
+                    },
+                    "required": ["mode"]
+                  }
+                },
+                "required": ["input"]
+              }
+            },
+            "required": ["event"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "pipeline": {
+            "properties": {
+              "event": {
+                "properties": {
+                  "input": {
+                    "required": ["url"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calendar", "event"],
+      "properties": {
+        "calendar": {
+          "$ref": "#/$defs/calendarStage"
+        },
+        "event": {
+          "$ref": "#/$defs/eventStage"
+        }
+      }
+    },
+    "calendarStage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "parser"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Ics", "Html", "Json", "Rss"]
+        },
+        "fetch": {
+          "$ref": "#/$defs/fetchConfig"
+        },
+        "parser": {
+          "type": "object",
+          "description": "Parser-specific options for calendar stage."
+        }
+      }
+    },
+    "eventStage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "input", "parser"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["None", "Html", "Json"]
+        },
+        "input": {
+          "$ref": "#/$defs/eventInput"
+        },
+        "parser": {
+          "type": "object",
+          "description": "Parser-specific options for event stage."
+        },
+        "limits": {
+          "$ref": "#/$defs/eventLimits"
+        }
+      }
+    },
+    "eventInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["none", "calendarFieldUrl", "fixedUrl"]
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://"
+        }
+      }
+    },
+    "eventLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sameHostOnly", "maxRequestsPerRun"],
+      "properties": {
+        "sameHostOnly": {
+          "type": "boolean",
+          "default": true
+        },
+        "maxRequestsPerRun": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "requestTimeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        }
+      }
+    },
+    "fetchConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST"]
+        },
+        "authentication": {
+          "$ref": "#/$defs/authenticationConfig"
+        },
+        "requestHeaders": {
+          "type": "object",
+          "maxProperties": 50,
+          "propertyNames": {
+            "pattern": "^[A-Za-z0-9-]+$"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "pagination": {
+          "type": "object"
+        }
+      }
+    },
+    "authenticationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": ["string", "integer"],
+          "enum": ["None", "ApiKey", "Bearer", "Basic", 0, 1, 2, 3]
+        },
+        "headerName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "secret": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "validationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minEventsPerFetch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxEventsPerFetch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

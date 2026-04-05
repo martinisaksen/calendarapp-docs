@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/ics.schema.json",
+  "title": "CalendarApp Ics schemaDefinition",
+  "description": "Contributor-facing JSON Schema for CalendarApp Ics source schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventEnrichment": {
+      "$ref": "#/$defs/eventEnrichment"
+    },
+    "validation": {
+      "$ref": "#/$defs/validationRules"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventEnrichment": {
+            "properties": {
+              "enabled": { "const": true },
+              "parser": { "const": "HtmlLite" }
+            },
+            "required": ["enabled", "parser"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "eventEnrichment": {
+            "required": ["htmlLiteMappings"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "mappingValue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "htmlMappings": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "description": { "$ref": "#/$defs/mappingValue" },
+        "location": { "$ref": "#/$defs/mappingValue" },
+        "venueName": { "$ref": "#/$defs/mappingValue" },
+        "venueAddress": { "$ref": "#/$defs/mappingValue" },
+        "imageUrl": { "$ref": "#/$defs/mappingValue" },
+        "url": { "$ref": "#/$defs/mappingValue" }
+      }
+    },
+    "eventEnrichment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "parser"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "parser": {
+          "type": "string",
+          "enum": ["GenericHtml", "HtmlLite"]
+        },
+        "maxFetchesPerRun": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sameHostOnly": {
+          "type": "boolean"
+        },
+        "htmlLiteMappings": {
+          "$ref": "#/$defs/htmlMappings"
+        }
+      }
+    },
+    "validationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minEventsPerFetch": {
+          "type": "integer"
+        },
+        "maxEventsPerFetch": {
+          "type": "integer"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}
