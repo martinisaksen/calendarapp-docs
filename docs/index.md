@@ -86,6 +86,7 @@ Contract reminder for ICS onboarding:
 | HtmlLite | [Selectors](source-schemas/html-lite/selectors.md) | CSS-like and XPath usage rules |
 | HtmlLite | [Event Identity](source-schemas/html-lite/event-identity.md) | Stable ID strategy and fallback behavior |
 | HtmlLite | [Time Handling](source-schemas/html-lite/time-handling.md) | Date/time parsing and timezone assumptions |
+| HtmlLite | [Platform Patterns](source-schemas/html-lite/platform-patterns.md) | Platform-specific onboarding recipes for common builders such as Squarespace and Wix |
 | HtmlLite | [Pagination](source-schemas/html-lite/pagination.md) | Multi-page extraction strategies |
 | HtmlLite | [Detail Pages](source-schemas/html-lite/detail-pages.md) | Detail-page enrichment and merge rules |
 | HtmlLite | [Validation Checklist](source-schemas/html-lite/validation-checklist.md) | Quality gates before admin handoff |

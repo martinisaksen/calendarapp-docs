@@ -14,6 +14,38 @@ Examples:
 - Riskier: .event-time
 - Risky: visible text like 10:30 am - 11:30 am
 
+## Canonical Datetime In A Link Or Query Parameter
+
+Sometimes the visible card text is incomplete, but an export or detail link contains the canonical datetime in a stable query value.
+
+This is an acceptable HtmlLite pattern when all of these are true:
+- the mapped field comes from one stable attribute such as an `href`
+- the query parameter is machine-readable and present consistently across cards
+- the transform chain is bounded and deterministic
+
+Example: extract UTC start and end timestamps from a Google Calendar export link.
+
+```json
+{
+  "mappings": {
+    "startTime": ".eventlist-meta-export-google@href",
+    "endTime": ".eventlist-meta-export-google@href"
+  },
+  "fieldTransforms": {
+    "startTime": [
+      { "type": "RegexReplace", "value": "^.*[?&]dates=([0-9]{8}T[0-9]{6}Z)/([0-9]{8}T[0-9]{6}Z).*$", "replacement": "$1" },
+      { "type": "RegexReplace", "value": "^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})Z$", "replacement": "$1-$2-$3T$4:$5:$6Z" }
+    ],
+    "endTime": [
+      { "type": "RegexReplace", "value": "^.*[?&]dates=([0-9]{8}T[0-9]{6}Z)/([0-9]{8}T[0-9]{6}Z).*$", "replacement": "$2" },
+      { "type": "RegexReplace", "value": "^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})Z$", "replacement": "$1-$2-$3T$4:$5:$6Z" }
+    ]
+  }
+}
+```
+
+Prefer this over parsing teaser text when the link value is clearly the source of truth. Do not use it as a license for broad regex scraping against free-form copy.
+
 ## Split Date And Time Support
 
 When the page separates date and time into different nodes, map:

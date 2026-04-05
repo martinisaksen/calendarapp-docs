@@ -22,6 +22,7 @@ This reference is shared by both tracks:
 - `detailPage.detailMappings` run against detail-page DOM
 - `multiDateExpansion` can fan out one card into multiple occurrences from a single date-list field
 - `fieldTransforms` supports deterministic low-risk per-field cleanup after extraction
+- deterministic extraction from canonical values such as query parameters is allowed when the source field already contains stable machine-readable data
 - Detail-page enrichment runs when both `detailPage.enabled=true` and `CALENDARAPP_HTMLLITE_DETAIL_ENRICHMENT_ENABLED` is not set to disable it
 - `pagination.type` allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
 - `schemaDefinition` must be sent as a JSON string in API payloads
@@ -38,7 +39,29 @@ Low-risk `fieldTransforms` types:
 - `stripWrappingQuotes`
 - `nullIfEqualsAny`
 
-Avoid high-risk transform patterns such as regex/expression execution or cross-field semantic reconstruction.
+Avoid high-risk transform patterns such as open-ended expression execution, brittle cross-field semantic reconstruction, or regex chains that guess at human-readable prose.
+
+## Deterministic URL-Query Extraction Is Allowed
+
+Some HtmlLite sources expose the most reliable datetime in a canonical attribute or URL query parameter rather than visible text. In those cases, deterministic extraction is allowed and is often preferable to parsing teaser text from the card.
+
+Good fit:
+- a detail or export link contains machine-readable timestamps such as `dates=20260409T020000Z/20260409T040000Z`
+- the extraction can be described with one stable mapping and a short bounded transform chain
+- the transformed value is still derived from a single source field rather than reconstructed from unrelated fields
+
+Bad fit:
+- the regex has to infer missing month, year, or meridiem from surrounding prose
+- the transform depends on card-specific wording or layout text
+- multiple unrelated fields must be merged to guess the final datetime
+
+Use this pattern sparingly and document why the query value is the canonical source of truth.
+
+See also:
+- [Time Handling](time-handling.md)
+- [Platform Patterns](platform-patterns.md)
+- [Squarespace-Specific Patterns](squarespace-specific-patterns.md)
+- [Wix-Specific Selector Patterns](wix-specific-patterns.md)
 
 ## Multi-Date Expansion
 

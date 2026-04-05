@@ -62,6 +62,9 @@ nav:
       - Selectors: source-schemas/html-lite/selectors.md
       - Event Identity: source-schemas/html-lite/event-identity.md
       - Time Handling: source-schemas/html-lite/time-handling.md
+      - Platform Patterns: source-schemas/html-lite/platform-patterns.md
+      - Squarespace-Specific Patterns: source-schemas/html-lite/squarespace-specific-patterns.md
+      - Wix-Specific Selector Patterns: source-schemas/html-lite/wix-specific-patterns.md
       - Pagination: source-schemas/html-lite/pagination.md
       - Detail Pages: source-schemas/html-lite/detail-pages.md
       - Validation Checklist: source-schemas/html-lite/validation-checklist.md
@@ -72,3 +75,4 @@ nav:
     - Choose A Source Type: source-schemas/choose-source-type.md
     - Submission API And Validation: source-schemas/submission-api-and-validation.md
     - HtmlLite Overview: source-schemas/html-lite/overview.md
+    - HtmlLite Platform Patterns: source-schemas/html-lite/platform-patterns.md
