@@ -16,19 +16,28 @@ Do not use `Rss` when the feed is missing event dates or when a better ICS feed 
 
 ## Required `schemaDefinition` Shape
 
-`Rss` requires `extractionRules`.
+`Rss` uses v3 pipeline. The RSS-specific contract applies to `pipeline.calendar.parser` and requires `mappings`.
 
 ```json
 {
-  "extractionRules": {
+  "mappings": {
     "title": "title",
     "description": "description",
     "startTime": "pubDate",
-    "link": "link",
-    "guid": "guid",
+    "eventUrl": "link",
+    "id": "guid",
     "location": "location"
   },
+  "filters": {
+    "includeAny": [
+      { "field": "title", "value": "showcase", "matchType": "contains" }
+    ],
+    "excludeAny": [
+      { "field": "description", "value": "recap", "matchType": "contains" }
+    ]
+  },
   "validation": {
+    "minEventsPerFetch": 1,
     "requiredFields": ["title", "startTime"]
   }
 }
@@ -38,30 +47,46 @@ Do not use `Rss` when the feed is missing event dates or when a better ICS feed 
 
 - `type` must be `Rss`
 - `feedUrl` points at the XML feed
-- `schemaDefinition.extractionRules` maps output fields to XML elements or attributes per item
-- `validation.requiredFields` should almost always include `title` and `startTime`
+- `schemaDefinition.pipeline.calendar.parser.mappings` maps output fields to XML elements or attributes per item
+- `validation.minEventsPerFetch` should default to `1`
+- `validation.requiredFields` should default to `title` and `startTime`
 
 ## Requirements And Validation Notes
 
-- `extractionRules` is required
+- `mappings` is required
 - each extraction rule value should resolve against each feed item
 - `startTime` must parse as a real date/time
-- `guid` is recommended for stable identity
-- `link` should point to the event detail page when available
+- `id` is recommended for stable identity (map from `guid` when available)
+- `eventUrl` should point to the event detail page when available (map from `link` or `url`)
+- `location` or `endTime` should be added to `validation.requiredFields` only when the feed is consistently complete and dropping missing items is intentional
+
+## Filtering Expectations
+
+- Prefer an event-only or category-specific upstream feed URL when the publisher offers one.
+- If upstream filtering is not sufficient, use `pipeline.calendar.parser.filters` with deterministic include/exclude rules.
+- Keep filter rules explicit and reviewable (`field`, `value`, optional `matchType`, optional `caseSensitive`).
+- If the feed mixes event items with blog/news/announcement content and cannot be narrowed upstream or with deterministic parser filters, choose a different source URL or source type.
+- If you enable detail enrichment, make sure `link` or `url` is mapped because the detail stage depends on it even though it is not part of `requiredFields`.
 
 ## Recommended Contributor Workflow
 
 1. Inspect the feed structure and confirm that each item is an event.
-2. Map `title` and `startTime` first.
-3. Add `description`, `link`, `guid`, and `location`.
-4. Run `test-fetch` and verify that the sample items parse correctly.
-5. Submit the draft with `community-submissions`.
+2. If the publisher offers multiple RSS endpoints, pick the narrowest event-oriented feed before authoring the schema.
+3. Map `title` and `startTime` first.
+4. Add `validation.minEventsPerFetch = 1` and `validation.requiredFields = ["title", "startTime"]`.
+5. Add `description`, `eventUrl`, `id`, and `location`.
+6. Run `test-fetch` and verify that the sample items parse correctly.
+7. Tighten `requiredFields` only if the feed is consistently complete and you intentionally want incomplete items dropped.
+8. Add deterministic `filters.includeAny`/`filters.excludeAny` rules if non-event items remain after source-side narrowing.
+9. Submit the draft with `community-submissions`.
 
 ## Common Failure Modes
 
 - using a general-purpose blog/news feed instead of an event feed
 - `startTime` points to a non-date field
-- missing `guid` leads to unstable identity
+- missing `id` mapping leads to unstable identity
 - element names differ between RSS and Atom variants
+- using broad keyword filters without deterministic review criteria
+- adding `location` or `endTime` to `requiredFields` too early and filtering out otherwise valid events
 
 See also: [Submission API And Validation](submission-api-and-validation.md)

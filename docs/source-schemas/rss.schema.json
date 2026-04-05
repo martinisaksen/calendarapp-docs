@@ -2,15 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://martinisaksen.github.io/calendarapp-docs/source-schemas/rss.schema.json",
   "title": "CalendarApp Rss schemaDefinition",
-  "description": "Contributor-facing JSON Schema for CalendarApp Rss source schemas.",
+  "description": "Contributor-facing JSON Schema for pipeline.calendar.parser when pipeline.calendar.type is Rss.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "extractionRules"
+    "mappings"
   ],
   "properties": {
-    "extractionRules": {
-      "$ref": "#/$defs/rssExtractionRules"
+    "mappings": {
+      "$ref": "#/$defs/rssMappings"
+    },
+    "filters": {
+      "$ref": "#/$defs/rssFilters"
     },
     "eventEnrichment": {
       "$ref": "#/$defs/eventEnrichment"
@@ -42,7 +45,7 @@
     }
   ],
   "$defs": {
-    "rssExtractionRules": {
+    "rssMappings": {
       "type": "object",
       "additionalProperties": false,
       "minProperties": 1,
@@ -59,6 +62,48 @@
         "link": { "type": "string" },
         "timeZone": { "type": "string" },
         "timezone": { "type": "string" }
+      }
+    },
+    "rssFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "includeAny": {
+          "$ref": "#/$defs/rssFilterRules"
+        },
+        "excludeAny": {
+          "$ref": "#/$defs/rssFilterRules"
+        }
+      }
+    },
+    "rssFilterRules": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/$defs/rssFilterRule"
+      }
+    },
+    "rssFilterRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "value"],
+      "properties": {
+        "field": {
+          "type": "string",
+          "enum": ["title", "description", "eventUrl", "category"]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "matchType": {
+          "type": "string",
+          "enum": ["contains", "equals", "startsWith", "endsWith", "regex"]
+        },
+        "caseSensitive": {
+          "type": "boolean"
+        }
       }
     },
     "validationRules": {

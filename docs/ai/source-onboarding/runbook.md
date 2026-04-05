@@ -18,7 +18,7 @@ Use this runbook when an AI agent can execute the full source onboarding loop fr
 ## Required Reading
 
 Before execution, read:
-- [llms.txt](https://martinisaksen.github.io/calendarapp-docs/llms.txt) to discover canonical docs and schema files
+- [llms.txt](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/llms.txt) to discover canonical docs and schema files
 - [Choose A Source Type](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/choose-source-type.md)
 - [Submission API And Validation](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/submission-api-and-validation.md)
 - [Submission Request JSON Schema](https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/source-schemas/submission-request.schema.json)
@@ -88,7 +88,7 @@ Terminal failure:
 
 Structured-source bootstrap rules:
 - `Ics`: use a minimal validation-only schemaDefinition unless the source needs stricter required fields
-- `Rss`: define `extractionRules` and map at least `title` and parseable `startTime`
+- `Rss`: use `pipeline.calendar.parser.mappings`, map at least `title` and parseable `startTime`, and default `validation` to `{"minEventsPerFetch":1,"requiredFields":["title","startTime"]}`
 - `JsonApi`: use v3 pipeline format (`schemaVersion = 3`) with `pipeline.calendar` and `pipeline.event`
 
 JsonApi bootstrap guardrails:
@@ -162,7 +162,14 @@ For `JsonApi`:
 - parser and fetch options belong under stage nodes (for example `pipeline.calendar.parser`, `pipeline.calendar.fetch`)
 
 For `Rss`:
-- `extractionRules` values should resolve against each feed item
+- `pipeline.calendar.parser.mappings` values should resolve against each feed item
+- default `validation` should include `minEventsPerFetch = 1` and `requiredFields = ["title", "startTime"]`
+- add `id` mapping when stable source identity exists (usually mapped from `guid`)
+- add `eventUrl` mapping when event detail pages exist (usually mapped from `link` or `url`); this is operationally required for RSS detail enrichment even though it is not part of `requiredFields`
+- use `pipeline.calendar.parser.filters` only for deterministic include/exclude logic when upstream filtering is insufficient
+- use source-side filtering first: prefer a narrower event-only feed URL, category-specific feed, or documented query parameter when the upstream source offers one
+- only add `location` or `endTime` to `validation.requiredFields` when the feed is consistently populated for those fields and dropping missing items is intentional
+- if the feed mixes blog/news/non-event items and cannot be narrowed at the source or with deterministic parser filters, treat that as a source-selection failure
 
 For `Ics`:
 - rely on the feed for title, start, end, location, and UID when present
@@ -229,6 +236,13 @@ When `validation.totalEventsParsed = 0`, retry in this order:
 3. verify transformed `startTime` and `endTime` are actually populated after mappings/transforms
 4. map `timeZone` when the source provides it
 5. add or correct pagination
+
+For RSS specifically, also check this before retrying further:
+- confirm the feed itself is event-oriented and not a general announcements/news feed
+- confirm upstream filtering is already applied at the feed URL when the publisher exposes category/date/event-only variants
+- confirm parser filters are deterministic and documented when used (`filters.includeAny`/`filters.excludeAny`)
+- confirm extra required fields such as `location` or `endTime` are not filtering out valid events unintentionally
+- if detail enrichment is enabled, confirm `eventUrl` is mapped and resolves to a real event page
 
 When `validation.totalEventsParsed > 0` but `description` remains empty for JsonApi/Html sources:
 

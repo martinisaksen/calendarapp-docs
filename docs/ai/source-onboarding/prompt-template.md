@@ -21,7 +21,7 @@ REQUIRED PROCESS — NO SHORTCUTS
 Step 1 — Retrieve Documentation
 
 You MUST fetch and read all of these before doing anything else:
-- https://martinisaksen.github.io/calendarapp-docs/llms.txt
+- https://raw.githubusercontent.com/martinisaksen/calendarapp-docs/main/docs/llms.txt
 - From that index, fetch the raw URL for: choose-source-type.md
 - From that index, fetch the raw URL for: submission-api-and-validation.md
 
@@ -34,6 +34,7 @@ Step 2 — Doc Evidence (MANDATORY)
 Print a section called "Doc Evidence" containing direct verbatim quotes (not summaries) from the docs you fetched for:
 - Source type selection rules
 - ICS-specific rules (if the feed is ICS)
+- RSS-specific default validation and filtering rules (if the feed is RSS)
 - Submission constraints (schemaDefinition format, metadata field restrictions)
 
 Step 3 — Retrieve Schema Contract
@@ -61,12 +62,25 @@ Step 5 — Build Schema
 Build the complete JSON payload.
 It must validate against the submission request schema and follow all constraints quoted in Step 2.
 
+If the selected type is `Rss`, the payload MUST also follow these generation defaults unless the docs explicitly justify a tighter variant:
+- include `pipeline.calendar.parser.mappings.title`
+- include parseable `pipeline.calendar.parser.mappings.startTime`
+- include `validation.minEventsPerFetch = 1`
+- include `validation.requiredFields = ["title", "startTime"]`
+- add `pipeline.calendar.parser.mappings.id` when the feed exposes stable identity (often mapped from `guid`)
+- add `pipeline.calendar.parser.mappings.eventUrl` when the feed exposes detail pages (often mapped from `link` or `url`)
+- prefer source-side filtering first (event-only feed URL or category-specific feed URL)
+- when source-side filtering is insufficient, use supported schema filtering with `pipeline.calendar.parser.filters.includeAny` / `excludeAny`
+- if the feed mixes non-event items and the source offers no narrower event-only variant, stop and explain that the feed is not suitable for RSS onboarding as-is
+
 Step 6 — Validation Gate (MANDATORY before output)
 
 Explicitly confirm:
 - schemaDefinition is a JSON STRING (not an object)
 - metadata contains ONLY allowed fields: location, region, category, language, contactEmail, or estimatedEventCount
 - For Ics: schemaDefinition is {} or validation-only (no mappings, eventMapping, transforms, sourceType, url)
+- For Rss: validation includes `minEventsPerFetch = 1` and `requiredFields = ["title", "startTime"]` unless the docs support a stricter field gate
+- For Rss: any filters are under `pipeline.calendar.parser.filters` and only use supported fields (`title`, `description`, `eventUrl`, `category`)
 
 Step 7 — Test + Submit
 

@@ -273,7 +273,7 @@ Use `POST /api/source-schemas/test-fetch` while refining the schema. Send the co
   "description": "Community events from Example Org",
   "type": "Rss",
   "feedUrl": "https://example.org/events/feed.rss",
-  "schemaDefinition": "{\"extractionRules\":{\"title\":\"title\",\"startTime\":\"pubDate\"},\"validation\":{\"requiredFields\":[\"title\",\"startTime\"]}}",
+  "schemaDefinition": "{\"schemaVersion\":3,\"pipeline\":{\"calendar\":{\"type\":\"Rss\",\"parser\":{\"mappings\":{\"title\":\"title\",\"startTime\":\"pubDate\",\"eventUrl\":\"link\",\"id\":\"guid\"},\"filters\":{\"includeAny\":[{\"field\":\"title\",\"value\":\"event\",\"matchType\":\"contains\"}],\"excludeAny\":[{\"field\":\"description\",\"value\":\"recap\",\"matchType\":\"contains\"}]}}},\"event\":{\"type\":\"None\",\"input\":{\"mode\":\"none\"},\"parser\":{}}},\"validation\":{\"minEventsPerFetch\":1,\"requiredFields\":[\"title\",\"startTime\"]}}",
   "metadata": {
     "location": "Example City",
     "region": "WA",
@@ -469,11 +469,22 @@ Authoring note:
     "calendar": {
       "type": "Rss",
       "parser": {
-        "extractionRules": {
+        "mappings": {
           "title": "title",
-          "startTime": "pubDate"
+          "startTime": "pubDate",
+          "eventUrl": "link",
+          "id": "guid"
+        },
+        "filters": {
+          "includeAny": [
+            { "field": "title", "value": "event", "matchType": "contains" }
+          ],
+          "excludeAny": [
+            { "field": "description", "value": "recap", "matchType": "contains" }
+          ]
         },
         "validation": {
+          "minEventsPerFetch": 1,
           "requiredFields": ["title", "startTime"]
         }
       }
@@ -546,6 +557,35 @@ For historical v1/v2 examples, see the legacy JsonApi v2 reference page.
   }
 }
 ```
+
+## RSS Default Validation And Filtering Rules
+
+Use these defaults for new RSS source schemas unless the source proves a tighter rule is safe:
+
+```json
+{
+  "validation": {
+    "minEventsPerFetch": 1,
+    "requiredFields": ["title", "startTime"]
+  }
+}
+```
+
+Authoring expectations:
+
+- Always require `title` and `startTime` for RSS drafts.
+- Add `id` mapping when the feed exposes a stable source identifier (typically mapped from `guid`).
+- Add `eventUrl` mapping when the feed exposes event detail pages (typically mapped from `link` or `url`).
+- Add `location` or `endTime` to `requiredFields` only when the feed is consistently populated and you intentionally want items missing those fields dropped.
+- Do not rely on `maxEventsPerFetch` as a content filter; only set it when you have a verified operational reason to bound expected feed size.
+
+Filtering expectations for RSS:
+
+- Prefer source-side filtering first: pick the right upstream feed URL and use any upstream category/date/event-only query options the publisher already exposes.
+- When source-side filtering is insufficient, use `pipeline.calendar.parser.filters.includeAny` / `excludeAny`.
+- RSS filter rules must be deterministic and use supported fields only: `title`, `description`, `eventUrl`, `category`.
+- If the feed mixes blog/news/non-event items and you cannot narrow it at the source, do not treat it as a valid RSS onboarding target.
+- If detail enrichment is required, `eventUrl` becomes operationally required even though it is not part of `requiredFields`.
 
 ## Common Invalid Patterns
 
