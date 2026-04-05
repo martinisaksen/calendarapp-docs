@@ -139,6 +139,20 @@ This is a common cross-contract mistake when using examples from other systems.
 
 For `Ics`, `schemaDefinition` is typically `{}` or validation-only because the parser reads RFC 5545 fields directly.
 
+## Reading `test-fetch` Results Carefully
+
+Treat `sampleEvents` as diagnostic examples, not as a guaranteed sorted list of the newest events.
+
+- `sampleEvents` may include older events even when the source feed still contains current or future events.
+- If an ICS feed looks unexpectedly stale based on `sampleEvents`, inspect the raw feed before concluding the source is unusable.
+- Compare `totalEventsParsed` with the raw feed when counts look suspiciously low, especially for recurring calendars or long-running Google Calendars.
+
+Practical ICS check:
+
+1. Fetch the raw `.ics` response.
+2. Confirm it contains current or future `VEVENT` entries.
+3. If the raw feed is current but `sampleEvents` look old or `totalEventsParsed` seems unexpectedly low, treat that as a validation/troubleshooting signal rather than immediate evidence that the source itself is stale.
+
 ---
 
 ## Common Mistakes (And How to Avoid Them)

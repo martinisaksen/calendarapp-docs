@@ -246,9 +246,11 @@ Steps:
 2. Search for `calendar.google.com` and locate the `<iframe>` `src` attribute value.
 3. The `src` URL contains one or more `src=...` query parameters. Each value is a base64-encoded Google Calendar ID.
 4. Decode each base64 value. In PowerShell: `[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("PASTE_VALUE_HERE"))`. In a browser console: `atob("PASTE_VALUE_HERE")`. The decoded ID ends with `@group.calendar.google.com` or `@gmail.com`.
-5. URL-encode the decoded calendar ID (replace `@` with `%40`, `/` with `%2F`, etc.).
-6. Construct the ICS feed URL: `https://calendar.google.com/calendar/ical/{URL_ENCODED_CALENDAR_ID}/public/basic.ics`
-7. Test the URL in your browser or with `test-fetch`. A private or restricted calendar returns 404 or 403 — only submit public feeds.
+5. If the iframe contains multiple `src` parameters, inspect each decoded calendar ID before choosing one. Embedded pages often include unrelated calendars such as U.S. holidays, shared venue calendars, or secondary collections.
+6. Submit only the venue-owned or organization-owned public calendar that actually represents the source you are onboarding.
+7. URL-encode the decoded calendar ID (replace `@` with `%40`, `/` with `%2F`, etc.).
+8. Construct the ICS feed URL: `https://calendar.google.com/calendar/ical/{URL_ENCODED_CALENDAR_ID}/public/basic.ics`
+9. Test the URL in your browser or with `test-fetch`. A private or restricted calendar returns 404 or 403 — only submit public feeds.
 
 When a source embeds multiple Google Calendars (for example, one for performances and one for auditions), create a **separate ICS source submission** for each public calendar.
 
