@@ -29,6 +29,34 @@ Fix:
 - use `"field": "eventUrl"` in `pipeline.event.input`
 - see [v3 event input constraints](../v3/event-input-constraints.md)
 
+## pipeline.calendar.type must be "Html" for HtmlLite sources
+
+A common schema validation failure occurs when contributors set `pipeline.calendar.type` to `"HtmlLite"` inside the `schemaDefinition`. The runtime rejects this value.
+
+The correct distinction:
+
+| Field | Correct value |
+|---|---|
+| Top-level source `type` (submission envelope) | `"HtmlLite"` |
+| `pipeline.calendar.type` (inside `schemaDefinition`) | `"Html"` |
+
+Fix: in your `schemaDefinition`, set `pipeline.calendar.type` to `"Html"`. The outer submission field `type` stays `"HtmlLite"`.
+
+See the [v3 Pipeline Examples](../v3/pipeline-examples.md) for a minimum-shape reference.
+
+## JSON endpoint returns HTML string instead of event objects
+
+Some endpoints return `Content-Type: application/json` but the payload body is an HTML string rather than structured event objects. This is common with WordPress `wp-json` wrappers where the body field contains raw HTML markup.
+
+Decision rule:
+
+- If the JSON response contains **structured event objects** traversable with a path like `$.events[*]`, use `JsonApi`.
+- If the JSON response contains an **HTML string** (event data is embedded HTML, not a JSON object array), treat the source as `HtmlLite` and parse the embedded HTML instead.
+
+How to check: inspect the raw response body. If event records are HTML markup rather than JSON key/value objects, choose `HtmlLite`.
+
+See [Choose A Source Type](../choose-source-type.md) for the full source type decision table.
+
 ## validation.totalEventsParsed = 0
 
 **This is the #1 source creation issue.** Events silently drop when required fields fail to parse.

@@ -75,6 +75,11 @@ Typical example:
 https://api.example.org/events
 ```
 
+!!! warning "JSON response with HTML body — use HtmlLite instead"
+    Some endpoints return `Content-Type: application/json` but the payload body is a raw HTML string rather than structured event objects. WordPress `wp-json` wrappers sometimes behave this way.
+
+    If the JSON body's event data is not parseable as structured JSON objects (for example, if the value is an embedded HTML document), treat the source as `HtmlLite` and parse the embedded HTML. Use `JsonApi` only when the response contains traversable structured event objects.
+
 ### HtmlLite
 
 Use HtmlLite only when:

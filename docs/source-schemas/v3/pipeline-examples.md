@@ -4,9 +4,14 @@
 
 Use these templates as a starting point. Add fields incrementally and validate after each change.
 
-### Html -> Html (Simplest Valid Html Pipeline)
+### Html -> Html (HtmlLite Sources — Minimum Valid v3 Pipeline)
 
-Use when the calendar/list source is HTML. For v3, `Html -> None` is not allowed by the current security allowlist.
+Use this pipeline pair for **HtmlLite** sources. For v3, `Html -> None` is not allowed by the current security allowlist.
+
+!!! warning "pipeline.calendar.type for HtmlLite sources"
+    The **top-level source `type`** field in the submission envelope is `"HtmlLite"`.
+
+    The **inner `pipeline.calendar.type`** inside `schemaDefinition` must be `"Html"` — **not** `"HtmlLite"`. Using `"HtmlLite"` as the inner calendar type fails v3 runtime validation.
 
 > Note: During current phase-2 scaffolding, `pipeline.event.input.field` must be `eventUrl`.
 

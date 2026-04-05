@@ -26,6 +26,9 @@ This reference is shared by both tracks:
 - `pagination.type` allowed values: `nextLink`, `queryIncrement`, `pathIncrement`, `fixedUrls`
 - `schemaDefinition` must be sent as a JSON string in API payloads
 
+!!! warning "v3 pipeline.calendar.type for HtmlLite"
+    When building a v3 `schemaDefinition` for an HtmlLite source, set `pipeline.calendar.type` to `"Html"` — not `"HtmlLite"`. The top-level source `type` field in the submission envelope remains `"HtmlLite"`. See [v3 Pipeline Examples](../v3/pipeline-examples.md).
+
 Low-risk `fieldTransforms` types:
 - `trim`
 - `collapseWhitespace`
