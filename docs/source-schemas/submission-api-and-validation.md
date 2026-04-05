@@ -67,6 +67,11 @@ Current v3 guardrails to account for during authoring:
 - `pipeline.event.input.field` currently expects `eventUrl` for phase-2 scaffolding when `event.type` is `Html` or `Json`
 - Some type pairs are rejected (for example `Html -> None`); use the allowlist in [Pipeline V3 Type Pair Reference](v3/type-pair-reference.md)
 
+JsonApi event-link clarification:
+
+- Map `url` as the canonical event link key in `pipeline.calendar.parser.mappings` when the source exposes per-event detail links.
+- Runtime output and `sampleEvents` may still show `eventUrl` as a normalized alias, depending on parser behavior. That alias does not change the authored mapping key.
+
 **Metadata fields** (all optional, but recommended):
 
 | Field | Type | Example |

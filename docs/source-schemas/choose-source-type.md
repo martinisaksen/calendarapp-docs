@@ -125,6 +125,17 @@ Evidence checklist before committing to a type:
 
 If any checklist item fails, continue discovery before picking a type.
 
+### Discovery Example: Next.js Public Bundle -> JsonApi
+
+Some event pages are Next.js shells backed by a public content API.
+
+1. Check the initial HTML and linked scripts for `/_next/` assets or serialized app data.
+2. Inspect public bundle code for fetch targets, hostnames, and required headers such as `x-api-key`.
+3. Verify the discovered endpoint returns structured event JSON rather than HTML wrapped in JSON.
+4. If the bundle reveals both a stable JSON endpoint and the required public API key/header, choose `JsonApi` and carry those request requirements into the schema.
+
+This avoids unnecessary `HtmlLite` attempts against a page that only renders event cards after client-side data loading.
+
 ## Proof Before You Pick HtmlLite
 
 Before you choose `HtmlLite`, you should be able to cite all of these from the initial HTML response:
