@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Source Schema Submission Request",
+  "description": "Valid payload for both POST /api/source-schemas/test-fetch and POST /api/source-schemas/community-submissions",
+  "type": "object",
+  "required": ["type", "feedUrl", "schemaDefinition", "name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the calendar source",
+      "examples": ["La Center Community Calendar", "Seattle Parks & Recreation Events"]
+    },
+    "description": {
+      "type": "string",
+      "description": "What this source publishes; 1-2 sentences",
+      "examples": ["Public events from La Center, WA", "Official city events and announcements"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["Ics", "Rss", "JsonApi", "HtmlLite"],
+      "description": "The source type detected from the feed"
+    },
+    "feedUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Absolute URL of the calendar feed (HTTP or HTTPS)",
+      "examples": ["https://example.org/calendar.ics", "https://example.org/events/feed.rss"]
+    },
+    "schemaDefinition": {
+      "type": "string",
+      "description": "JSON schema definition as a STRING (not an object). For Ics, typically '{}' or validation-only. For other types, includes parsing rules like eventArrayPath and mappings.",
+      "examples": ["{}", "{\"extractionRules\":{\"title\":\"title\",\"startTime\":\"pubDate\"}}"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata about the source. Use only documented fields and customAttributes fallback keys.",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "Geographic location: city, state, region, or venue name",
+          "examples": ["Seattle, WA", "Pike Place Market", "Washington State"]
+        },
+        "region": {
+          "type": "string",
+          "description": "State or region code",
+          "examples": ["WA", "CA", "Pacific Northwest"]
+        },
+        "category": {
+          "type": "string",
+          "description": "Event category",
+          "examples": ["community", "government", "entertainment", "education"]
+        },
+        "language": {
+          "type": "string",
+          "description": "ISO 639-1 language code",
+          "examples": ["en", "es", "fr"]
+        },
+        "contactEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Email for questions about this source"
+        },
+        "estimatedEventCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate number of events published per month"
+        },
+        "eventStartNotBeforeDate": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Only include events whose start date is on or after this date (YYYY-MM-DD)"
+        },
+        "eventFallbackUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Absolute URL used when an event has no eventUrl"
+        },
+        "customAttributes": {
+          "type": "object",
+          "description": "Optional fallback attributes. Supported keys: defaultLocation, defaultVenueAddress.",
+          "properties": {
+            "defaultLocation": {
+              "type": "string",
+              "description": "Fallback event location when location is missing"
+            },
+            "defaultVenueAddress": {
+              "type": "string",
+              "description": "Fallback event venueAddress when venueAddress is missing"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "calendarStrategyOverride": {
+      "type": "string",
+      "enum": ["Auto", "Exclusive", "Merge"],
+      "description": "Optional override for how events are calendared (default: Auto)"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "name": "La Center Calendar",
+      "description": "Public ICS feed from La Center, WA",
+      "type": "Ics",
+      "feedUrl": "https://calendar.google.com/calendar/ical/lacentercalendar%40gmail.com/public/basic.ics",
+      "schemaDefinition": "{}",
+      "metadata": {
+        "location": "La Center, WA",
+        "region": "WA",
+        "category": "community",
+        "eventStartNotBeforeDate": "2026-01-01",
+        "eventFallbackUrl": "https://example.org/events",
+        "customAttributes": {
+          "defaultLocation": "123 Main St, La Center, WA 98629"
+        }
+      }
+    },
+    {
+      "name": "Example Recreation Events",
+      "description": "Community events from Example Org",
+      "type": "Rss",
+      "feedUrl": "https://example.org/events/feed.rss",
+      "schemaDefinition": "{\"extractionRules\":{\"title\":\"title\",\"startTime\":\"pubDate\"},\"validation\":{\"requiredFields\":[\"title\",\"startTime\"]}}",
+      "metadata": {
+        "location": "Example City",
+        "region": "WA",
+        "category": "community",
+        "language": "en",
+        "eventStartNotBeforeDate": "2026-01-01",
+        "eventFallbackUrl": "https://example.org/events",
+        "customAttributes": {
+          "defaultVenueAddress": "456 Civic Way, Example City, WA 99999"
+        }
+      }
+    }
+  ]
+}
