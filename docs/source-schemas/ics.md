@@ -6,7 +6,7 @@ For a machine-readable authoring contract, use the contributor-facing [Ics JSON 
 
 ## ⚠️ ONLY Valid Format For ICS
 
-The `Ics` source schema submission to CalendarApp **has exactly this structure and no other**:
+The `Ics` source schema submission to Wheneber **has exactly this structure and no other**:
 
 ```json
 {
@@ -145,7 +145,7 @@ Example: strip Teams URL from `location` while preserving venue text.
 
 Some ICS feeds provide only partial event detail in VEVENT fields, while full details live on an event page linked by `eventUrl`.
 
-CalendarApp supports optional HTML detail enrichment for `Ics` sources during ingestion and test-fetch.
+Wheneber supports optional HTML detail enrichment for `Ics` sources during ingestion and test-fetch.
 
 - The feed remains the calendar source of truth.
 - Detail pages are fetched only when enrichment is enabled.

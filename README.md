@@ -1,6 +1,6 @@
-# CalendarApp Docs
+# Wheneber Docs
 
-Public documentation for onboarding new calendar sources into CalendarApp.
+Public documentation for onboarding new calendar sources into Wheneber.
 
 ## Scope
 
@@ -10,7 +10,7 @@ This repository documents source contribution workflows only:
 - payload design, validation, and contributor-safe submission patterns
 - autonomous AI onboarding runbooks and prompt templates
 
-This repository does not document code contribution for private CalendarApp application repositories.
+This repository does not document code contribution for private Wheneber application repositories.
 
 ## Audience Tracks
 

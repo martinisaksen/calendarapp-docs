@@ -10,7 +10,7 @@ Use these endpoints:
 
 ## v3 Pipeline Contract (Current)
 
-CalendarApp uses the `schemaDefinition` v3 contract for new source authoring and submission, with explicit calendar and event parser stages.
+Wheneber uses the `schemaDefinition` v3 contract for new source authoring and submission, with explicit calendar and event parser stages.
 
 - Overview: [Pipeline V3 Overview](v3/pipeline-overview.md)
 - Examples: [Pipeline V3 Examples](v3/pipeline-examples.md)
@@ -828,7 +828,7 @@ If a payload clearly contains events but extraction is empty, simplify `eventArr
 
 ## Formal Schema Definition Status
 
-CalendarApp now publishes contributor-facing JSON Schema documents for all supported `schemaDefinition` types.
+Wheneber now publishes contributor-facing JSON Schema documents for all supported `schemaDefinition` types.
 
 See [Source Schema JSON Schema Files](json-schema-files.md).
 

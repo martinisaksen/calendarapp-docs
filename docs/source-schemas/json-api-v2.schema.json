@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://Wheneber.github.io/calendarapp-docs/source-schemas/json-api-v2.schema.json",
-  "title": "CalendarApp JsonApi schemaDefinition v2",
-  "description": "Contributor-facing JSON Schema for CalendarApp JsonApi source schemas using schemaVersion 2. This mirrors the documented and backend-supported shape for source onboarding, but backend validation remains the final source of truth.",
+  "title": "Wheneber JsonApi schemaDefinition v2",
+  "description": "Contributor-facing JSON Schema for Wheneber JsonApi source schemas using schemaVersion 2. This mirrors the documented and backend-supported shape for source onboarding, but backend validation remains the final source of truth.",
   "type": "object",
   "additionalProperties": false,
   "required": [

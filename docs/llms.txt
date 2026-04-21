@@ -1,6 +1,6 @@
-# CalendarApp Source Onboarding Docs
+# Wheneber Source Onboarding Docs
 
-> Public documentation for onboarding event sources into CalendarApp. Covers schema
+> Public documentation for onboarding event sources into Wheneber. Covers schema
 > submission, test-fetch validation, and contributor workflows for human contributors
 > and autonomous AI agents. All pages below are raw markdown — fetch them directly
 > without JavaScript.

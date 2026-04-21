@@ -1,6 +1,6 @@
 # Choose A Source Type
 
-Use this page before writing `schemaDefinition`. CalendarApp supports four contributor-facing source types:
+Use this page before writing `schemaDefinition`. Wheneber supports four contributor-facing source types:
 
 - `Ics`
 - `Rss`

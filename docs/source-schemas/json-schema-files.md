@@ -1,6 +1,6 @@
 # Source Schema JSON Schema Files
 
-CalendarApp publishes contributor-facing JSON Schema files for each supported `schemaDefinition` type.
+Wheneber publishes contributor-facing JSON Schema files for each supported `schemaDefinition` type.
 
 Use these files to help humans and AI generate more accurate schemas before calling the API.
 

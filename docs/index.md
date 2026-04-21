@@ -1,12 +1,12 @@
-# CalendarApp Source Onboarding Docs
+# Wheneber Source Onboarding Docs
 
-This site is the public source-of-truth for onboarding event sources into CalendarApp.
+This site is the public source-of-truth for onboarding event sources into Wheneber.
 
 It is intentionally split into two execution tracks:
 - Human source contributors
 - Autonomous AI agents
 
-> Scope boundary: these docs cover source onboarding and source schema submission only. They do not cover code contribution to private CalendarApp application repositories.
+> Scope boundary: these docs cover source onboarding and source schema submission only. They do not cover code contribution to private Wheneber application repositories.
 
 ## Machine-Readable Access
 

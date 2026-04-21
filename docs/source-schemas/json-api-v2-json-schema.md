@@ -1,6 +1,6 @@
 # JsonApi V2 JSON Schema
 
-CalendarApp now publishes a contributor-facing JSON Schema file for `JsonApi` `schemaDefinition` v2.
+Wheneber now publishes a contributor-facing JSON Schema file for `JsonApi` `schemaDefinition` v2.
 
 Use it to improve accuracy when authoring schemas manually or generating them with AI.
 
