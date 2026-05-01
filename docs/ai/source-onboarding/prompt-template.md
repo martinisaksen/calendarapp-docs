@@ -84,11 +84,11 @@ Explicitly confirm:
 
 Step 7 — Test + Submit
 
-If you have HTTP tool access and can reach the correct API endpoint for the current environment, POST to the test-fetch endpoint first, then submit the exact same payload to the submission endpoint if successful.
+If you have HTTP tool access, use `https://dev.api.wheneber.com/api/source-schemas` as the base for this workflow. POST to the test-fetch endpoint first, then submit the exact same payload to the submission endpoint if successful.
 
 Environment note:
-- Local development commonly uses http://localhost:5047/api/source-schemas
-- Hosted or production contributors may need a different documented endpoint
+- For Source Creation Specialist runs, use `https://dev.api.wheneber.com/api/source-schemas`
+- Do not switch this workflow to localhost for test-fetch or community submission
 
 If you do not have HTTP tool access or cannot reach the endpoint, do not pretend to test or submit. Instead, output the payload and PowerShell commands for the operator to run.
 
@@ -138,7 +138,7 @@ That's it. The prompt guides the rest of the workflow.
 - Check that you have internet access in the chat session
 - If using a custom GPT or restricted environment, make sure browsing/fetch tools are enabled
 
-**AI says it tested or submitted, but your environment does not support HTTP tools or localhost access:**
+**AI says it tested or submitted, but your environment does not support HTTP tools or dev.api access:**
 - Treat that as a bad response
 - Ask it to regenerate the answer with the payload plus PowerShell commands only, and to mark the test result as not executed
 

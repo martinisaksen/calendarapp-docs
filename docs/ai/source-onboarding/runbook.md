@@ -221,15 +221,17 @@ Pagination contract:
 
 ## Step 5: Test, Submit, Evaluate, Iterate
 
-1. Run `POST /api/source-schemas/test-fetch`.
-2. If test-fetch succeeds, submit Draft via `POST /api/source-schemas/community-submissions`.
+Use `https://dev.api.wheneber.com/api/source-schemas` as the canonical hosted base for this workflow.
+
+1. Run `POST https://dev.api.wheneber.com/api/source-schemas/test-fetch`.
+2. If test-fetch succeeds, submit Draft via `POST https://dev.api.wheneber.com/api/source-schemas/community-submissions`.
 3. Read `response.validation`.
 
-Local test-fetch caution:
+Hosted validation note:
 
-- local validation can be sample-capped for parsed events and detail fetches
-- do not assume `validation.totalEventsParsed` equals the full live event count during local iteration
-- for HtmlLite and Wix sources, prefer accurate sample fields and plausible coverage over exact count parity until a fuller verification path is available
+- do not use a local backend instance for Source Creation Specialist test-fetch runs
+- treat `https://dev.api.wheneber.com` as the environment of record for validation and contributor Draft submission
+- if hosted validation differs from page-visible counts, debug the schema against hosted sample events rather than switching back to localhost
 4. If failed, adjust and resubmit.
 
 For every iteration, record:
